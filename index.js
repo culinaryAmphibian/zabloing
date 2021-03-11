@@ -166,6 +166,12 @@ bot.on('message', async(message) =>
         case 'say':
             bot.miscCommands.get('say').execute(message, prefix);
             break;
+        case 'count':
+            bot.miscCommands.get('count').execute(message, args, bot);
+            break;
+        case 'purge':
+            bot.modCommands.get('purge').execute(message, args, bot);
+            break;
         case 'stop':
             if (message.author.id !== '550886249309929472') return;
             else process.exit();

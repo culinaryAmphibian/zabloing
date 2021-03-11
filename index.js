@@ -73,7 +73,8 @@ bot.on('message', async(message) =>
         if (args[0] == 'unignore')
         {
             UserJSON[message.author.id].ignore = false;
-            fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON), null, 2);
+            fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
+            message.channel.send('you will now be unignored!');
             return;
         }
         return;
@@ -164,7 +165,7 @@ bot.on('message', async(message) =>
             bot.miscCommands.get('count').execute(message, args, bot);
             break;
         case 'ignoreme':
-            bot.miscCommands.get('ignore').execute(message, UserJSON);
+            bot.miscCommands.get('ignore').execute(message, args, UserJSON);
             break;
         case 'help':
             bot.helpCommands.get('help').execute(message, args, prefix);

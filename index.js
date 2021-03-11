@@ -4,6 +4,54 @@ const fs = require('fs');
 const config = require('./shhh/config');
 const prefix = '.';
 
+bot.econCommands = new Discord.Collection();
+const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
+for(const econFile of econCommandFiles)
+{
+    const econCommand = require(`./commands/econ/${econFile}`);
+    bot.econCommands.set(econCommand.name, econCommand);
+}
+
+bot.modCommands = new Discord.Collection();
+const modCommandFiles = fs.readdirSync('./commands/mod/').filter(file => file.endsWith('.js'));
+for(const modFile of modCommandFiles)
+{
+    const modCommand = require(`./commands/mod/${modFile}`);
+    bot.modCommands.set(modCommand.name, modCommand);
+}
+
+bot.helpCommands = new Discord.Collection();
+const helpCommandFiles = fs.readdirSync('./commands/help/').filter(file => file.endsWith('.js'));
+for(const helpFile of helpCommandFiles)
+{
+    const helpCommand = require(`./commands/help/${helpFile}`);
+    bot.helpCommands.set(helpCommand.name, helpCommand);
+}
+
+bot.miscCommands = new Discord.Collection();
+const miscCommandFiles = fs.readdirSync('./commands/misc/').filter(file => file.endsWith('.js'));
+for(const miscFile of miscCommandFiles)
+{
+    const miscCommand = require(`./commands/misc/${miscFile}`);
+    bot.miscCommands.set(miscCommand.name, miscCommand);
+}
+
+bot.testCommands = new Discord.Collection();
+const testCommandFiles = fs.readdirSync('./commands/test/').filter(file => file.endsWith('.js'));
+for(const testFile of testCommandFiles)
+{
+    const testCommand = require(`./commands/test/${testFile}`);
+    bot.testCommands.set(testCommand.name, testCommand);
+}
+
+bot.imgCommands = new Discord.Collection();
+const imgCommandFiles = fs.readdirSync('./commands/img/').filter(file => file.endsWith('.js'));
+for(const imgFile of imgCommandFiles)
+{
+    const imgCommand = require(`./commands/img/${imgFile}`);
+    bot.imgCommands.set(imgCommand.name, imgCommand);
+}
+
 bot.on('ready', () =>
 {
     console.log('Online.');
@@ -33,10 +81,38 @@ bot.on('message', async(message) =>
     switch (args[0])
     {
         case 'zabloing':
-            message.channel.send()
-        // zabloing, googas, gronch, lfao, lo, lao/laoo, spong, ganca, birth, lisa, onlyfans, single, shishcat, sessogatto
-        // floppa, snowducc, sori, melon, femboy, zingus, gattino
-        // chiro, kai, istella, woo, monkimeme
+            message.channel.send(config.imageLinks.zabloing);
+            break;
+        case 'googas':
+            message.channel.send(config.imageLinks.googas);
+            break;
+        case 'gronch':
+            message.channel.send(config.imageLinks.gronch);
+            break;
+        case 'lfao':
+            message.channel.send(config.imageLinks.lfao);
+            break;
+        case 'lao':
+            message.channel.send(config.imageLinks.lao);
+            break;
+        case 'spong':
+            message.channel.send(config.imageLinks.spong);
+            break;
+        case 'ganca':
+            message.channel.send(config.imageLinks.thankus);
+            break;
+        case 'onlyfans':
+            bot.imgCommands.get('of').execute(message);
+        case 'single':
+            message.channel.send(config.imageLinks.single);
+            break;
+        case 'shishcat':
+            bot.imgCommands.get('shish').execute(message, args);
+        case 'sessogatto':
+            message.channel.send(config.imageLinks.sessogatto);
+            break;
+        // snowducc, sori, melon, zingus
+        // chiro, kai, istella, woo, monkimeme, shishcat, floppa, gattino
         
     }
 })

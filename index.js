@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require('fs');
-const config = require('./shhh/config');
+const config = JSON.parse(fs.readFileSync('./shhh/config.json'))
 const prefix = '.';
 
 bot.econCommands = new Discord.Collection();
@@ -68,6 +68,7 @@ bot.on('message', async(message) =>
     if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
     if (message.content.includes('birth')) message.channel.send(config.imageLinks.birth);
     if (message.content == 'why') message.channel.send(config.imageLinks.why);
+    if (message.content == 'me lon') message.channel.send(config.imageLinks.melon);
     if (message.content.includes('femboy')) message.channel.send(config.imageLinks.femboy);
     if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.madCatDrip);
     if (message.content.includes('👍'))
@@ -103,18 +104,29 @@ bot.on('message', async(message) =>
             break;
         case 'onlyfans':
             bot.imgCommands.get('of').execute(message);
+            break;
         case 'single':
             message.channel.send(config.imageLinks.single);
             break;
         case 'shishcat':
             bot.imgCommands.get('shish').execute(message, args);
+            break;
         case 'sessogatto':
             message.channel.send(config.imageLinks.sessogatto);
             break;
-        // snowducc, sori, melon, zingus
-        // chiro, kai, istella, woo, monkimeme, shishcat, floppa, gattino
+        case 'snowducc':
+            message.channel.send(config.imageLinks.snowducc);
+            break;
+        case 'zingus':
+            message.channel.send(config.imageLinks.zingus);
+            break;
+        case 'sori':
+            bot.imgCommands.get('sori').execute(message);
+            break;
+        
+        // chiro, kai, istella, woo, monkimeme, shishcat, floppa
         
     }
 })
 
-bot.login(config.token);
+bot.login(config["token"]);

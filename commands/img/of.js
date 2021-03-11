@@ -1,4 +1,7 @@
-const config = require('../../shhh/config');
+const Discord = require('discord.js');
+const fs = require('fs');
+const config = require('../../shhh/config.json');
+const Links = config["imageLinks"];
 module.exports =
 {
     name: 'of', description: ':flushed:',
@@ -6,8 +9,9 @@ module.exports =
     {
         message.react('😳');
         message.channel.send('onlyfans sent!');
-        message.author.send(config.imageLinks.of)
-        .catch((err) => { message.channel.send("I can't dm you :("); });
+        let of = new Discord.MessageAttachment(Links.of);
+        message.author.send(of)
+        .catch((err) => { message.channel.send("I can't dm you :("); })
         return;
     }
 }

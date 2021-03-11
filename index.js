@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require('fs');
+const av = require('./commands/misc/av');
 const secret = require('./shhh/secret.json');
-const config = JSON.parse(fs.readFileSync('./shhh/config.json'))
+const config = JSON.parse(fs.readFileSync('./shhh/config.json'));
+const UserJSON = JSON.parse(fs.readFileSync('./DB/users.json'));
 const prefix = '.';
 
 bot.econCommands = new Discord.Collection();
@@ -64,6 +66,23 @@ bot.on('message', async(message) =>
 {
     if (message.author.bot) return;
     if (!message.guild) return;
+
+    if (UserJSON[message.author.id])
+    {
+        if ( (!UserJSON[message.author].name) || (UserJSON[message.author].name !== message.author.tag))
+        {
+            UserJSON[message.author].name = message.author.tag;
+        }
+        if ( !UserJSON[message.author].servers )
+        {
+            UserJSON[message.author].servers = [ `${message.guild.id}` ];
+        }
+        if (!UserJSON[message.author].servers.includes(message.guild.id))
+        {
+            UserJSON[message.author].servers[UserJSON[message.author.servers.length]] = message.guild.id;
+        }
+        Fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON), null, 2);
+    }
     // w/o prefix
     if (message.content.includes('thankus')) message.channel.send(config.imageLinks.thankus);
     if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
@@ -80,6 +99,10 @@ bot.on('message', async(message) =>
         message.channel.send(thumbsUpCat);
     }
     if (!message.content.startsWith(prefix)) return;
+
+    global.eft = message.author.username;
+    global.efi = message.author.displayAvatarURL({dynamic:true});
+
     var args = message.content.substr(prefix.length).toLowerCase().split(' ');
     switch (args[0])
     {
@@ -132,12 +155,20 @@ bot.on('message', async(message) =>
             bot.imgCommands.get('istella').execute(message, args);
             break;
         case 'floppa':
-            bot.imgCommands.get('chiro').execute(message, args);
+            bot.imgCommands.get('floppa').execute(message, args);
             break;
         case 'woo':
             bot.imgCommands.get('woo').execute(message);
             break;
-        
+        case 'av':
+            bot.miscCommands.get('av').execute(message, args);
+            break;
+        case 'say':
+            bot.miscCommands.get('say').execute(message, prefix);
+            break;
+        case 'stop':
+            if (message.author.id !== '550886249309929472') return;
+            else process.exit();
         // monkimeme
         
     }

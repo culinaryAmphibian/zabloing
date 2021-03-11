@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require('fs');
+const secret = require('./shhh/secret.json');
 const config = JSON.parse(fs.readFileSync('./shhh/config.json'))
 const prefix = '.';
 
@@ -68,6 +69,7 @@ bot.on('message', async(message) =>
     if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
     if (message.content.includes('birth')) message.channel.send(config.imageLinks.birth);
     if (message.content == 'why') message.channel.send(config.imageLinks.why);
+    if (message.content == 'sori') bot.imgCommands.get('sori').execute(message);
     if (message.content == 'me lon') message.channel.send(config.imageLinks.melon);
     if (message.content.includes('femboy')) message.channel.send(config.imageLinks.femboy);
     if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.madCatDrip);
@@ -120,13 +122,25 @@ bot.on('message', async(message) =>
         case 'zingus':
             message.channel.send(config.imageLinks.zingus);
             break;
-        case 'sori':
-            bot.imgCommands.get('sori').execute(message);
+        case 'chiro':
+            bot.imgCommands.get('chiro').execute(message, args);
+            break;
+        case 'kai':
+            bot.imgCommands.get('kai').execute(message, args);
+            break;
+        case 'istella':
+            bot.imgCommands.get('istella').execute(message, args);
+            break;
+        case 'floppa':
+            bot.imgCommands.get('chiro').execute(message, args);
+            break;
+        case 'woo':
+            bot.imgCommands.get('woo').execute(message);
             break;
         
-        // chiro, kai, istella, woo, monkimeme, shishcat, floppa
+        // monkimeme
         
     }
 })
 
-bot.login(config["token"]);
+bot.login(secret["token"]);

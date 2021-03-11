@@ -1,11 +1,11 @@
 const Discord = require('discord.js');
 const config = require('../../shhh/config.json');
-const Links = config["imageLinks"].shish;
+const Links = config["imageLinks"].chiro;
 let lastIdx = -1;
 
 module.exports =
 {
-    name: 'shish', description: "shish's cat",
+    name: 'chiro', description: "jana's cat",
     execute(message, args)
     {
         let num;
@@ -16,7 +16,7 @@ module.exports =
                 if (!( (args[1] == 0) || (args[1].includes('-')) || args[1].includes('.') ) )
                 {
                     num = args[1] - 1;
-                    if (Links[num].endsWith('mp4'))
+                    if (Links[num].endsWith('mov'))
                     {
                         let vid = new Discord.MessageAttachment(Links[num]);
                         message.channel.send(vid);
@@ -26,11 +26,6 @@ module.exports =
                     }
                     return;
                 }
-            } else if (args[1] == 'gattina')
-            {
-                let vid = new Discord.MessageAttachment(Links[1]);
-                message.channel.send(vid);
-                return;
             } else return message.channel.send('...');
         } else
         {
@@ -40,7 +35,7 @@ module.exports =
                 num = Math.floor(Math.random() * Links.length);
             }
             lastIdx = num;
-            if (Links[num].endsWith('mp4'))
+            if (Links[num].endsWith('mov'))
             {
                 let vid = new Discord.MessageAttachment(Links[num]);
                 message.channel.send(vid);

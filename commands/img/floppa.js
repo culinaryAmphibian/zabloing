@@ -1,11 +1,11 @@
 const Discord = require('discord.js');
 const config = require('../../shhh/config.json');
-const Links = config["imageLinks"].shish;
+const Links = config["imageLinks"].floppa;
 let lastIdx = -1;
 
 module.exports =
 {
-    name: 'shish', description: "shish's cat",
+    name: 'floppa', description: "gregory",
     execute(message, args)
     {
         let num;
@@ -26,11 +26,6 @@ module.exports =
                     }
                     return;
                 }
-            } else if (args[1] == 'gattina')
-            {
-                let vid = new Discord.MessageAttachment(Links[1]);
-                message.channel.send(vid);
-                return;
             } else return message.channel.send('...');
         } else
         {

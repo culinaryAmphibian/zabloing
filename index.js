@@ -66,22 +66,17 @@ bot.on('message', async(message) =>
 {
     if (message.author.bot) return;
     if (!message.guild) return;
-
-    if (UserJSON[message.author.id])
+    bot.miscCommands.get('userdb').execute(message, UserJSON);
+    var args = message.content.substr(prefix.length).toLowerCase().split(' ');
+    if (UserJSON[message.author.id].ignore == true)
     {
-        if ( (!UserJSON[message.author].name) || (UserJSON[message.author].name !== message.author.tag))
+        if (args[0] == 'unignore')
         {
-            UserJSON[message.author].name = message.author.tag;
+            UserJSON[message.author.id].ignore = false;
+            fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON), null, 2);
+            return;
         }
-        if ( !UserJSON[message.author].servers )
-        {
-            UserJSON[message.author].servers = [ `${message.guild.id}` ];
-        }
-        if (!UserJSON[message.author].servers.includes(message.guild.id))
-        {
-            UserJSON[message.author].servers[UserJSON[message.author.servers.length]] = message.guild.id;
-        }
-        Fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON), null, 2);
+        return;
     }
     // w/o prefix
     if (message.content.includes('thankus')) message.channel.send(config.imageLinks.thankus);
@@ -103,7 +98,6 @@ bot.on('message', async(message) =>
     global.eft = message.author.username;
     global.efi = message.author.displayAvatarURL({dynamic:true});
 
-    var args = message.content.substr(prefix.length).toLowerCase().split(' ');
     switch (args[0])
     {
         case 'zabloing':
@@ -168,6 +162,12 @@ bot.on('message', async(message) =>
             break;
         case 'count':
             bot.miscCommands.get('count').execute(message, args, bot);
+            break;
+        case 'ignoreme':
+            bot.miscCommands.get('ignore').execute(message, UserJSON);
+            break;
+        case 'help':
+            bot.helpCommands.get('help').execute(message, args, prefix);
             break;
         case 'purge':
             bot.modCommands.get('purge').execute(message, args, bot);

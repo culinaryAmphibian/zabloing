@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../shhh/config.json');
-const Link = config["woo"];
+const Link = config["imageLinks"].woo;
 
 module.exports =
 {
@@ -8,6 +8,7 @@ module.exports =
     execute(message)
     {
         let vid = new Discord.MessageAttachment(Link);
-        return message.channel.send(vid);
+        message.channel.send(vid);
+        return;
     }
 }

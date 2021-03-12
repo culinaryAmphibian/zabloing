@@ -6,7 +6,7 @@ let blueCol = [r,g,b];
 module.exports =
 {
     name: 'av', description: 'fetches profile pictures',
-    execute(message, args)
+    execute(message, args, UserJSON)
     {
         let img;
         let name;
@@ -20,14 +20,14 @@ module.exports =
         }
         if (args[1] && (!mentioned))
         {
-            if (message.guild.members.cache.find(m => m.id === args[1]))
+            if (UserJSON[args[1]])
             {
-                let kid = message.guild.members.cache.find(m => m.id == args[1]);
-                img = kid.user.displayAvatarURL({dynamic:true, size: 4096});
-                name = kid.user.username;
-                url = `https://cdn.discordapp.com/avatars/${kid.user.id}/${kid.user.avatar}?size=4096`;
-            } else return message.channel.send('could not find that user in the cache. please try again after they have sent a message.');
-        } else if (!mentioned)
+                let kid = UserJSON[args[1]];
+                img = kid.pfp;
+                name = kid.name;
+                url = `https://cdn.discordapp.com/avatars/${args[1]}/${kid.avatarHash}?size=4096`;
+            } else return message.channel.send('could not find that user in the database. please try again after they have sent a message.');
+        } else if ((!mentioned) && (!args[1]))
         {
             img = message.author.displayAvatarURL({dynamic:true, size:4096});
             name = message.author.username;

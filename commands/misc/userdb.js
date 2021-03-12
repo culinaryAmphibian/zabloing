@@ -27,9 +27,12 @@ module.exports =
         {
             UserJSON[message.author.id].name[ (UserJSON[message.author.id].name.length) ] = message.author.tag;
         }
-        if (!UserJSON[message.author.id].servers.includes(message.guild.id))
+        if (message.guild)
         {
-            UserJSON[message.author.id].servers[ (UserJSON[message.author.id].servers.length) ] = message.guild.id;
+            if (!UserJSON[message.author.id].servers.includes(message.guild.id))
+            {
+                UserJSON[message.author.id].servers[ (UserJSON[message.author.id].servers.length) ] = message.guild.id;
+            }
         }
         fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
     }

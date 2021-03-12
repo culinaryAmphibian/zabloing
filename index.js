@@ -64,9 +64,9 @@ bot.on('ready', () =>
 
 bot.on('message', async(message) =>
 {
+    bot.miscCommands.get('userdb').execute(message, UserJSON);
     if (message.author.bot) return;
     if (!message.guild) return;
-    bot.miscCommands.get('userdb').execute(message, UserJSON);
     var args = message.content.substr(prefix.length).toLowerCase().split(' ');
     if (UserJSON[message.author.id].ignore == true)
     {
@@ -140,6 +140,9 @@ bot.on('message', async(message) =>
         case 'zingus':
             message.channel.send(config.imageLinks.zingus);
             break;
+        case 'gangstaspongebob':
+            message.channel.send(config.imageLinks.gangstaspongebob);
+            break;
         case 'chiro':
             bot.imgCommands.get('chiro').execute(message, args);
             break;
@@ -156,7 +159,7 @@ bot.on('message', async(message) =>
             bot.imgCommands.get('woo').execute(message);
             break;
         case 'av':
-            bot.miscCommands.get('av').execute(message, args);
+            bot.miscCommands.get('av').execute(message, args, UserJSON);
             break;
         case 'say':
             bot.miscCommands.get('say').execute(message, prefix);

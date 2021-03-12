@@ -35,7 +35,7 @@ module.exports =
                         [
                             { name: `${prefix}av`, value: `fetches a user's profile picture - can work with user id (sometimes)`},
                             { name: `${prefix}say`, value: `says a specified string` },
-                            { name: `${prefix}ignoreme`, value: `ignores your messages unless it's "${prefix}unignore`},
+                            { name: `${prefix}ignoreme`, value: `ignores your messages unless it's "${prefix}unignore"`},
                             { name: `${prefix}unignore`, value: `stops ignoring you if you were ignored in the first place`}
                         ], footer: {text: global.eft, icon_url: global.efi }
                     };

@@ -1,3 +1,4 @@
-node_modules/
-*.json
-shhh/
+/node_modules
+/shhh
+users.json
+/package stuff idk

@@ -7,7 +7,7 @@ module.exports =
         {
             if (args[2])
             {
-                message.guild.emojis.create(args[2], args[1]).then(emoji => message.channel.send(`${emoji}`)).catch(console.error);
+                message.guild.emojis.create(args[2], args[1]).then(emoji => message.channel.send(`${emoji}`)).catch((err) => message.channel.send(`${err}`));
                 return;
             } else if (message.attachments.first() && args[1])
             {

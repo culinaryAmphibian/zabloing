@@ -1,4 +1,5 @@
 /node_modules
-/shhh
+secret.json
 users.json
-/package stuff idk
+package.json
+package-lock.json

@@ -44,10 +44,10 @@ module.exports =
                 switch(arg(args))
                 {
                     case 1:
-                        message.channel.send(args[2] ** 2);
+                        message.channel.send(args[2] * 2);
                         break;
                     case 2:
-                        message.channel.send(args[2] ** args[3]);
+                        message.channel.send(args[2] * args[3]);
                         break;
                 }
                 break;
@@ -93,15 +93,15 @@ module.exports =
             case 'tan':
                 message.channel.send(Math.tan(args[2] * factor));
                 break;
-            case 'asin':
-                message.channel.send(Math.asin(args[2] * factor));
-                break
-            case 'acos':
-                message.channel.send(Math.acos(args[2] * factor));
-                break
-            case 'atan':
-                message.channel.send(Math.atan(args[2] * factor));
-                break;
+            // case 'asin':
+            //     message.channel.send(Math.sin((1/args[2]) * factor));
+            //     break
+            // case 'acos':
+            //     message.channel.send(Math.acos(args[2] * factor));
+            //     break
+            // case 'atan':
+            //     message.channel.send(Math.atan(args[2] * factor));
+            //     break;
         }
     }
 }

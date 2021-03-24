@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 const fs = require('fs');
-const av = require('./commands/misc/av');
 const secret = require('./shhh/secret.json');
 const config = JSON.parse(fs.readFileSync('./shhh/config.json'));
 const UserJSON = JSON.parse(fs.readFileSync('./DB/users.json'));
 const prefix = '.';
+const Distube = require('distube');
+bot.distube = new Distube(bot, {searchSongs:false, emitNewSongOnly:true});
 
 bot.econCommands = new Discord.Collection();
 const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
@@ -55,6 +56,14 @@ for(const imgFile of imgCommandFiles)
     bot.imgCommands.set(imgCommand.name, imgCommand);
 }
 
+bot.musicCommands = new Discord.Collection();
+const musicCommandFiles = fs.readdirSync('./commands/misc/music').filter(file => file.endsWith('.js'));
+for (const musicFile of musicCommandFiles)
+{
+    const musicCommand = require(`./commands/misc/music/${musicFile}`);
+    bot.musicCommands.set(musicCommand.name, musicCommand);
+}
+
 bot.on('ready', () =>
 {
     console.log('Online.');
@@ -62,9 +71,22 @@ bot.on('ready', () =>
 
 });
 
+bot.on("guildMemberAdd", member =>
+{
+    const welcomeChannel = member.guild.channels.cache.find(channel => channel.name === 'welcome');
+    welcomeChannel.send(`Welcome, ${member}!`);
+});
+
+bot.on("guildMemberRemove", member =>
+{
+    const goodbyeChannel = member.guild.channels.cache.find(c => c.name === 'bye')
+    goodbyeChannel.send(`aw rip ${member.tag} left :(((`)
+});
+
 bot.on('message', async(message) =>
 {
     bot.miscCommands.get('userdb').execute(message, UserJSON);
+    bot.miscCommands.get('water').execute(message, UserJSON);
     if (message.author.bot) return;
     if (!message.guild) return;
     var args = message.content.substr(prefix.length).toLowerCase().split(' ');
@@ -83,17 +105,15 @@ bot.on('message', async(message) =>
     if (message.content.includes('thankus')) message.channel.send(config.imageLinks.thankus);
     if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
     if (message.content.includes('birth')) message.channel.send(config.imageLinks.birth);
-    if (message.content == 'why') message.channel.send(config.imageLinks.why);
-    if (message.content == 'sori') bot.imgCommands.get('sori').execute(message);
-    if (message.content == 'me lon') message.channel.send(config.imageLinks.melon);
+    if (message.content == 'why') return message.channel.send(config.imageLinks.why);
+    if (message.content == 'sori') return bot.imgCommands.get('sori').execute(message);
+    if (message.content == 'me lon') return message.channel.send(config.imageLinks.melon);
+    if (message.content == 'le mon') return message.channel.send(config.imageLinks.lemon);
+    if (message.content == 'le fishe') return bot.imgCommands.get('lefishe').execute(message);
     if (message.content.includes('femboy')) message.channel.send(config.imageLinks.femboy);
     if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.madCatDrip);
-    if (message.content.includes('👍'))
-    {
-        message.react('👍');
-        let thumbsUpCat = new Discord.MessageAttachment(config.imageLinks.thumbsUpCat);
-        message.channel.send(thumbsUpCat);
-    }
+    if (message.content.includes('👍')) bot.imgCommands.get('thumbcat').execute(message);
+    if (message.content == `<@!${bot.user.id}>`) return message.channel.send(`My prefix is ${prefix}`);
     if (!message.content.startsWith(prefix)) return;
 
     global.eft = message.author.username;
@@ -159,29 +179,61 @@ bot.on('message', async(message) =>
             bot.imgCommands.get('woo').execute(message);
             break;
         case 'av':
-            bot.miscCommands.get('av').execute(message, args, UserJSON);
+            bot.miscCommands.get('av').execute(message, args, prefix);
             break;
         case 'say':
             bot.miscCommands.get('say').execute(message, prefix);
+            break;
+        case 'hm':
+            bot.miscCommands.get('hangman').execute(message, args);
             break;
         case 'count':
             bot.miscCommands.get('count').execute(message, args, bot);
             break;
         case 'ignoreme':
+            console.log(message.attachments);
             bot.miscCommands.get('ignore').execute(message, args, UserJSON);
             break;
+        case 'addemoji':
+            bot.miscCommands.get('addemoji').execute(message, args, bot);
+            break;
         case 'help':
-            bot.helpCommands.get('help').execute(message, args, prefix);
+            bot.helpCommands.get('help').execute(message, args, prefix, bot);
+            break;
+        case 'calc':
+            bot.miscCommands.get('calc').execute(message, args);
+            break;
+        case 'play':
+            bot.miscCommands.get('musicHandler').execute(message, args, bot);
+            break;
+        case 'loop':
+            bot.miscCommands.get('musicHandler').execute(message, args, bot);
+            break;
+        case 'stop':
+            bot.miscCommands.get('musicHandler').execute(message, args, bot);
+            break;
+        case 'skip':
+            bot.miscCommands.get('musicHandler').execute(message, args, bot);
+            break;
+        case 'queue':
+            bot.miscCommands.get('musicHandler').execute(message, args, bot);
+            break;
+        case 'eng':
+            bot.miscCommands.get('eng').execute(message, args, prefix)
             break;
         case 'purge':
             bot.modCommands.get('purge').execute(message, args, bot);
             break;
+        case 'idk':
+            bot.testCommands.get('msgcollector').execute(message, UserJSON);
+            break;
+        case 'john':
+            message.channel.send(`<:john:822616260638408724>`);
+            break;
         case 'stop':
             if (message.author.id !== '550886249309929472') return;
             else process.exit();
-        // monkimeme
-        
     }
-})
+});  
 
 bot.login(secret["token"]);

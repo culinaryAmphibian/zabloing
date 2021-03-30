@@ -72,5 +72,13 @@
             "https://tenor.com/view/floppa-big-floppa-gif-20132181",
             "https://cdn.discordapp.com/attachments/771350617301843970/816320414476795945/video0_21.mp4"
         ]
+    },
+    "cooldowns":
+    {
+        "misc":
+        {
+            "googleImages": 2000,
+            "hangman": 600000
+        }
     }
 }

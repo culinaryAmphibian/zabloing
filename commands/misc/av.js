@@ -29,20 +29,14 @@ module.exports =
         }
         else if (args[1])
         {
-            // search.searchMember(query).then(x =>
-            // {
-            //     img = ;
-            //     name = x.user.username;
-            //     url = 
-            // });
-            let query = args.join(" ").substr(args[0].length + 1);
+            let query = args.slice(1).join(" ");
             search.searchMember(message, query, true).then(x =>
-                {
-                    img = x.user.displayAvatarURL({dynamic:true, size:4096});
-                    name = x.user.username;
-                    url = `https://cdn.discordapp.com/avatars/${x.user.id}/${x.user.avatar}.png?size=4096`;
-                    embd(blueCol, name, url, img, message);
-                })
+            {
+                img = x.user.displayAvatarURL({dynamic:true, size:4096});
+                name = x.user.username;
+                url = `https://cdn.discordapp.com/avatars/${x.user.id}/${x.user.avatar}.png?size=4096`;
+                embd(blueCol, name, url, img, message);
+            }).catch(err => message.channel.send(err));
         } else
         {
             img = message.author.displayAvatarURL({dynamic:true, size:4096});

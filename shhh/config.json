@@ -71,14 +71,30 @@
             "https://cdn.discordapp.com/attachments/771350617301843970/818916398192525332/FB_IMG_1603222853890.jpg",
             "https://tenor.com/view/floppa-big-floppa-gif-20132181",
             "https://cdn.discordapp.com/attachments/771350617301843970/816320414476795945/video0_21.mp4"
+        ],
+        "hangmans":
+        [
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294929180524584/1.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294931457114132/2.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294933248606228/3.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294934461022248/4.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294935996399676/5.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294937300434954/6.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294938922975322/7.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294940400418836/8.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294941897523220/9.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294943721652234/10.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828439403129995345/11.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828294983685242910/12.png",
+            "https://cdn.discordapp.com/attachments/816879899024556045/828691682996125817/13.png"
         ]
     },
     "cooldowns":
     {
         "misc":
         {
-            "googleImages": 2000,
-            "hangman": 600000
+            "googleImages": 5000,
+            "hangman": 30000
         }
     }
 }

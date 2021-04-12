@@ -1,9 +1,9 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client({partials:['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER', 'USER']});
 const fs = require('fs');
-const secret = require('./shhh/secret.json');
-const config = JSON.parse(fs.readFileSync('./shhh/config.json'));
-const UserJSON = JSON.parse(fs.readFileSync('./DB/users.json'));
+const config = require('./DB/config.json');
+const secret = require('./DB/secret.json');
+const UserJSON = require('./DB/users.json');
 const prefix = '.';
 
 const Distube = require('distube');
@@ -11,13 +11,13 @@ bot.distube = new Distube(bot, {searchSongs:false, emitNewSongOnly:true});
 
 // let guild = bot.guilds.cache.size;
 
-// bot.econCommands = new Discord.Collection();
-// const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
-// for(const econFile of econCommandFiles)
-// {
-//     const econCommand = require(`./commands/econ/${econFile}`);
-//     bot.econCommands.set(econCommand.name, econCommand);
-// }
+bot.econCommands = new Discord.Collection();
+const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
+for(const econFile of econCommandFiles)
+{
+    const econCommand = require(`./commands/econ/${econFile}`);
+    bot.econCommands.set(econCommand.name, econCommand);
+}
 
 bot.modCommands = new Discord.Collection();
 const modCommandFiles = fs.readdirSync('./commands/mod/').filter(file => file.endsWith('.js'));
@@ -59,6 +59,14 @@ for(const imgFile of imgCommandFiles)
     bot.imgCommands.set(imgCommand.name, imgCommand);
 }
 
+bot.util = new Discord.Collection();
+const utilFiles = fs.readdirSync('./commands/util/').filter(file => file.endsWith('.js'));
+for(const utilFile of utilFiles)
+{
+    const utilCommand = require(`./commands/util/${utilFile}`);
+    bot.util.set(utilCommand.name, utilCommand);
+}
+
 bot.on('ready', () =>
 {
     console.log('Online.');
@@ -67,20 +75,25 @@ bot.on('ready', () =>
 
 bot.on("guildMemberAdd", member =>
 {
-    return bot.miscCommands.get('newMember').execute(member);
+    return bot.util.get('newMember').execute(member);
 });
 
 bot.on("guildMemberRemove", member =>
 {
-    return bot.miscCommands.get('oldMember').execute(member);
+    return bot.util.get('oldMember').execute(member);
+});
+
+bot.on('guildCreate', guild =>
+{
+    return bot.util.get('serverJoin').execute(guild);
 });
 
 bot.on('message', async(message) =>
 {
     if (message.author.bot) return;
-    bot.miscCommands.get('userdb').execute(message, UserJSON);
+    bot.util.get('userdb').execute(message, UserJSON, bot);
     if (!message.guild) return;
-    // bot.miscCommands.get('water').execute(message, UserJSON);
+    // bot.util.get('water').execute(message, UserJSON);
     if (!message.guild.member(bot.user).hasPermission('SEND_MESSAGES')) return message.author.send('I don\'t have the perms to send messages');
     var args = message.content.substr(prefix.length).toLowerCase().split(' ');
     if (UserJSON[message.author.id].ignore == true)
@@ -97,14 +110,15 @@ bot.on('message', async(message) =>
     if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
     if (message.content.includes('birth')) message.channel.send(config.imageLinks.birth);
     if (message.content == 'why') return message.channel.send(config.imageLinks.why);
-    if (message.content == 'sori') return bot.imgCommands.get('sori').execute(message);
+    if (message.content == 'sori') return message.channel.send({files:[{attachment:config.imageLinks.sori}]});
     if (message.content == 'me lon') return message.channel.send(config.imageLinks.melon);
     if (message.content == 'le mon') return message.channel.send(config.imageLinks.lemon);
-    if (message.content == 'le fishe') return bot.imgCommands.get('lefishe').execute(message);
+    if (message.content == 'le fishe') return message.channel.send({files:[{attachment:config.imageLinks.lefishe}]})
     if (message.content.includes('femboy')) message.channel.send(config.imageLinks.femboy);
     if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.madCatDrip);
     if (message.content.includes('👍')) bot.imgCommands.get('thumbcat').execute(message);
-    if (message.content == `<@!${bot.user.id}>`) return message.channel.send(`My prefix is ${prefix}`);
+    if (message.content.includes(`<@!${bot.user.id}>`)) message.channel.send(`Hi! My prefix is ${prefix}`);
+    // if (message.content.toLowerCase().startsWith('setprefix'))
     if (!message.content.startsWith(prefix)) return;
 
     global.eft = message.author.username;
@@ -119,16 +133,17 @@ bot.on('message', async(message) =>
     if (a == 'ganca') return message.channel.send(config.imageLinks.thankus);
     if (a == 'onlyfans') return bot.imgCommands.get('of').execute(message);
     if (a == 'single') return message.channel.send(config.imageLinks.single);
-    if (a == 'shishcat') return bot.imgCommands.get('shish').execute(message, args);
     if (a == 'sessogatto') return message.channel.send(config.imageLinks.sessogatto);
     if (a == 'snowducc') return message.channel.send(config.imageLinks.snowducc);
     if (a == 'zingus') return message.channel.send(config.imageLinks.zingus);
     if (a == 'gangstaspongebob') return message.channel.send(config.imageLinks.gangstaspongebob);
+    if (a == 'thursday') return message.channel.send({files:[{attachment:config.imageLinks.thursday}]});
     if (a == 'chiro') return bot.imgCommands.get('chiro').execute(message, args);
     if (a == 'kai')return bot.imgCommands.get('kai').execute(message, args);
+    if (a == 'shishcat') return bot.imgCommands.get('shish').execute(message, args);
     if (a == 'istella') return bot.imgCommands.get('istella').execute(message, args);
     if (a == 'floppa') return bot.imgCommands.get('floppa').execute(message, args);
-    if (a == 'woo') return bot.imgCommands.get('woo').execute(message);
+    if (a == 'woo') return message.channel.send({files:[{attachment:Link}]});
     if (a == 'av') return bot.miscCommands.get('av').execute(message, args, prefix);
     if (a == 'say') return bot.miscCommands.get('say').execute(message, prefix);
     if (a == 'hm') return bot.miscCommands.get('hangman').execute(message, args);
@@ -140,6 +155,7 @@ bot.on('message', async(message) =>
     if (a == 'calc') return bot.miscCommands.get('calc').execute(message, args);
     if (a == 'firstmsg') return bot.miscCommands.get('firstmsg').execute(message, args);
     if (a == 'serverinfo') return bot.miscCommands.get('serverInfo').execute(message);
+    if (a == 'bal') return bot.econCommands.get('bal').execute(message, args, UserJSON, bot);
     if (['play', 'p', 'loop', 'skip', 'stop', 'pause', 'dc', 'leave', 'q', 'queue'].includes(a))
         return bot.miscCommands.get('musicHandler').execute(message, args, bot);
     if (a == 'eng') return bot.miscCommands.get('eng').execute(message, args, prefix);
@@ -148,7 +164,8 @@ bot.on('message', async(message) =>
     if (['kick', 'ban'].includes(a)) return bot.modCommands.get('kickban').execute(message, args, bot);
     if (a == 'idk') return bot.miscCommands.get('hangman').execute(message);
     if (a == 'john') return message.channel.send(`<:john:822616260638408724>`);
-    if (a == 'stop')
+    if (a == 'tuf') return bot.testCommands.get('testingUserFinding').execute(message, args);
+    if (a == 'kill')
     {
         if (message.author.id !== '550886249309929472') return;
         else process.exit();

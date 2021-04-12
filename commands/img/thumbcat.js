@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Link = config["imageLinks"].thumbsUpCat;
 
 module.exports =
@@ -8,7 +7,6 @@ module.exports =
     execute(message)
     {
         message.react('👍');
-        let thumbsUpCat = new Discord.MessageAttachment(Link);
-        message.channel.send(thumbsUpCat);
+        message.channel.send({files:[{attachment:Link}]});
     }
 }

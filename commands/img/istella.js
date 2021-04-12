@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Links = config["imageLinks"].istella;
 let lastIdx = -1;
 

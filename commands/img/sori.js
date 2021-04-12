@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Links = config["imageLinks"];
 
 module.exports =
@@ -8,8 +7,7 @@ module.exports =
     execute(message)
     {
         message.react('😢');
-        let soriVid = new Discord.MessageAttachment(Links.sori);
-        message.channel.send(soriVid);
+        message.channel.send({files:[{attachment:Links.sori}]});
         return;
     }
 }

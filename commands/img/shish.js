@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Links = config["imageLinks"].shish;
 let lastIdx = -1;
 
@@ -18,8 +17,7 @@ module.exports =
                     num = args[1] - 1;
                     if (Links[num].endsWith('mp4'))
                     {
-                        let vid = new Discord.MessageAttachment(Links[num]);
-                        message.channel.send(vid);
+                        message.channel.send({files:[{attachment:Links[num], name: num}]});
                     } else
                     {
                         message.channel.send(Links[num]);
@@ -28,8 +26,7 @@ module.exports =
                 }
             } else if (args[1] == 'gattina')
             {
-                let vid = new Discord.MessageAttachment(Links[1]);
-                message.channel.send(vid);
+                message.channel.send({files:[{attachment:Links[num], name: num}]});
                 return;
             } else return message.channel.send('...');
         } else
@@ -42,8 +39,7 @@ module.exports =
             lastIdx = num;
             if (Links[num].endsWith('mp4'))
             {
-                let vid = new Discord.MessageAttachment(Links[num]);
-                message.channel.send(vid);
+                message.channel.send({files:[{attachment:Links[num], name: num}]});
             } else
             {
                 message.channel.send(Links[num]);

@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Links = config["imageLinks"];
 module.exports =
 {
@@ -8,9 +7,8 @@ module.exports =
     {
         message.react('😳');
         message.channel.send('onlyfans sent!');
-        let of = new Discord.MessageAttachment(Links.of);
-        message.author.send(of)
-        .catch((err) => { message.channel.send("I can't dm you :("); })
+        message.channel.send({files:[{attachment:Links.of}]})
+        .catch(() => { message.channel.send("I can't dm you :("); })
         return;
     }
 }

@@ -1,5 +1,4 @@
-const Discord = require('discord.js');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const Links = config["imageLinks"].kai;
 let lastIdx = -1;
 
@@ -18,8 +17,7 @@ module.exports =
                     num = args[1] - 1;
                     if (Links[num].endsWith('mov'))
                     {
-                        let vid = new Discord.MessageAttachment(Links[num]);
-                        message.channel.send(vid);
+                        message.channel.send({files:[{attachment:Links[num], name: num}]});
                     } else
                     {
                         message.channel.send(Links[num]);
@@ -37,8 +35,7 @@ module.exports =
             lastIdx = num;
             if (Links[num].endsWith('mov'))
             {
-                let vid = new Discord.MessageAttachment(Links[num]);
-                message.channel.send(vid);
+                message.channel.send({files:[{attachment:Links[num], name: num}]});
             } else
             {
                 message.channel.send(Links[num]);

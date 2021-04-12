@@ -2,7 +2,7 @@ const img = require('images-scraper');
 const google = new img({puppeteer:{headless:true}});
 const fs = require('fs');
 const UserJSON = require('../../DB/users.json');
-const config = require('../../shhh/config.json');
+const config = require('../../DB/config.json');
 const cooldown = config["cooldowns"].misc.googleImages;
 
 function coolDown(id)

@@ -4,7 +4,7 @@ module.exports =
     async execute(message, args, bot)
     {
         if (!message.member.hasPermission("BAN_MEMBERS")) return message.channel.send('you don\'t have perms.');
-        if (!message.guild.member(bot.user).hasPermission("BAN_MEMBERS")) return message.channel.send('i don\'t have perms.');
+        if (!message.guild.me.hasPermission("BAN_MEMBERS")) return message.channel.send('i don\'t have perms.');
         let userId = args[1];
         let reason = args.slice(2).join(" ");
         if ( (!userId) || (isNaN(userId)) || (!userId.length != 18)) return message.channel.send('invalid user id');

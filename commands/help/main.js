@@ -13,7 +13,7 @@ module.exports =
             switch(args[1])
             {
                 case 'img':
-                    bot.helpCommands.get('imgHelp').execute(message, prefix);
+                    bot.helpCommands.get('imgHelp').execute(message);
                     break;
                 case 'misc':
                     bot.helpCommands.get('miscHelp').execute(message, prefix, args);
@@ -22,6 +22,7 @@ module.exports =
                     bot.helpCommands.get('calcHelp').execute(message, prefix, args);
                     break;
                 case 'econ':
+                    bot.helpCommands.get('econHelp').execute(message, prefix, args);
                     break;
                 case 'mod':
                     bot.helpCommands.get('modHelp').execute(message, prefix, args);

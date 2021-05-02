@@ -8,20 +8,20 @@ const cmdCooldown = config["cooldowns"].misc.hangman;
 const hangmanImg = config["imageLinks"].hangmans;
 
 const reason = 'hangman game';
-let deleteTime = 1200;
 
 let r = Math.floor(Math.random() * 50);
 let g = Math.floor(Math.random() * 100) + 50;
 let b = (Math.floor(Math.random() * 25) + 1) + 230;
 let blueCol = [r,g,b];
 
+function writeToUsers() {return fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));}
 function writeToDB() {return fs.writeFileSync('./DB/hman.json', JSON.stringify(db, null, 2));}
 
 async function JSONCheck(id, channel)
 {
     if (!UserJSON[id].cooldowns.hangman) UserJSON[id].cooldowns.hangman = 0;
-    if (!UserJSON[id].games.hangman) UserJSON[id].games.hangman = { playing: false, lastGameLink: 0, gamesPlayed: 0, gamesWon: 0};
-    fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+    if (!UserJSON[id].games.hangman) UserJSON[id].games.hangman = { playing: false, lastGameLink: 0, gamesPlayed: 0, gamesWon: 0, startedANewGame: false};
+    writeToUsers();
     let subtraction = ( new Date().getTime() - UserJSON[id].cooldowns.hangman);
     let minTime = (cmdCooldown - subtraction)/1000;
     if (subtraction < cmdCooldown)
@@ -32,37 +32,37 @@ async function JSONCheck(id, channel)
     if (UserJSON[id].games.hangman.playing == true)
     {
         channel.send('you haven\'t finished a game, do you want to start a new one?');
-        let filter = m => m.author.id == id && m.channel === channel &&
+        let filter = m => m.author.id == id &&
         (m.content.includes('y') || m.content.includes('n'));
-        await channel.awaitMessages(filter, {max:1}).then(response =>
+        let j = await(channel.awaitMessages(filter, {max:1}))
+        if (j.first().content.includes('n'))
         {
-            if (response.first().content.includes('n'))
-            {
-                channel.send(`alright, your last game started at ${UserJSON[id].games.hangman.lastGameLink}`);
-                return 1;
-            } else channel.send('alright, starting a new game');
-        });
+            channel.send(`alright, your last game started at ${UserJSON[id].games.hangman.lastGameLink}`);
+            return 1;
+        } else
+        {
+            channel.send('alright, you have been cleared to start a new game');
+            UserJSON[id].games.hangman.startedANewGame = true;
+            writeToUsers();
+        }
     }
     UserJSON[id].games.hangman.playing = true;
     UserJSON[id].cooldowns.hangman = new Date().getTime();
-    fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+    writeToUsers();
 }
 
 function generateWord()
 {
     let used = db["used"];
-    if (used.length == words.length)
+    if (!words[0])
     {
+        words = used;
         used = [];
         writeToDB();
     }
-    let unusedIdxArr = [];
-    for (let i of words)
-    {
-        if (!used.includes(i)) unusedIdxArr.push(words.indexOf(i));
-    }
-    let chosenIdx = unusedIdxArr[Math.floor(Math.random() * unusedIdxArr.length)];
-    db["used"].push(words[chosenIdx]);
+    let chosenIdx = words[Math.floor(Math.random() * words.length)];
+    let removedWord = words.splice(chosenIdx, 1);
+    used.push(removedWord[0]);
     writeToDB();
     return used[used.length - 1];
 }
@@ -77,16 +77,6 @@ function guessFromUniqueLetters(str)
         if (!originalLettersArr.includes(i)) originalLettersArr.push(i);
     }
     return originalLettersArr.length + 4;
-}
-
-function charChk(str)
-{
-    let k = 0;
-    for (let i of str.split(""))
-    {
-        if ((i < "A") || (i > "z")) k = 1;
-    }
-    return k;
 }
 
 function correctGuessesTakenNum(word, guessesTakenArr)
@@ -126,12 +116,21 @@ function points(word, lettersLeft, guessesLeft, time)
     return Math.round((wordLengthCoeff * word.length) + (lettersLeftCoeff * lettersLeft) + (guessesLeftCoeff * guessesLeft) + (timeCoeff * time/1000)) * 2;
 }
 
+function niceDel(arr)
+{
+    while(arr[1])
+    {
+        arr.shift().delete({reason:reason});
+    }
+}
+
 function editEmbed(embed, underScores, guessesLeft, guessArr, wordToGuess, time, won)
 {
     let a = [];
     guessArr.forEach(element => {
         a.push(`"${element}", `);
     });
+    if (guessesLeft == 0) won = 0;
     switch(won)
     {
         case 1:
@@ -143,7 +142,7 @@ function editEmbed(embed, underScores, guessesLeft, guessArr, wordToGuess, time,
             embed.fields =
             [
                 { name: 'time', value: `${Math.round(time/1000)} seconds`},
-                { name: 'points earned', value: Math.round(points(wordToGuess, x, guessesLeft, time))}
+                { name: `${global.currency} earned`, value: Math.round(points(wordToGuess, x, guessesLeft, time))}
             ];
             break;
         }
@@ -180,9 +179,10 @@ module.exports =
         let wordToGuess = generateWord();
         let guessCount = guessFromUniqueLetters(wordToGuess);
         let _guessesTakenArr = [];
+        let mesArr = [];
         let won = 2;
         let _underScores = [];
-        for (let i in wordToGuess.split(""))
+        for (let i in wordToGuess.split(''))
         {
             _underScores.push("_");
         }
@@ -198,13 +198,15 @@ module.exports =
         const mainMessage = await(message.channel.send({embed:mainEmbed}));
         let t1 = UserJSON[message.author.id].cooldowns.hangman;
         UserJSON[message.author.id].games.hangman.lastGameLink = mainMessage.url;
-        fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+        writeToUsers();
         const filter = m => m.author.id === message.author.id &&
-        charChk(m.content) == 0 &&
+        m.content.match(/^\w+$/gi) &&
         (m.content.length == 1 || m.content.length == wordToGuess.length);
         const collector = new Discord.MessageCollector(message.channel, filter);
         collector.on('collect', async(collected) =>
         {
+            if (UserJSON[message.author.id].games.hangman.startedANewGame == true) return collector.stop();
+            mesArr.push(collected);
             let time = Math.floor((new Date().getTime() - t1)/1000);
             let guess = collected.content.toLowerCase();
             if (guessCount > 0)
@@ -212,7 +214,7 @@ module.exports =
                 if (_guessesTakenArr.includes(guess))
                 {
                     let mes = await message.channel.send('you already guessesed that!');
-                    return mes.delete({timeout:deleteTime, reason:reason});
+                    return mesArr.push(mes);
                 }
                 _guessesTakenArr.push(guess);
                 _underScores = replaceUndScores(_underScores.join(""), wordToGuess, guess);
@@ -225,11 +227,11 @@ module.exports =
                         {
                             won = 1;
                             let mes = await(collected.channel.send('nice, you guessed the last letter!'));
-                            mes.delete({timeout:deleteTime, reason:reason});
+                            mesArr.push(mes);
                         } else
                         {
                             let mes = await(collected.channel.send('nice, you guessed a letter!'));
-                            mes.delete({timeout:deleteTime, reason:reason});
+                            mesArr.push(mes);
                             mainMessage.edit({embed:editEmbed(mainEmbed, underScores, guessCount, _guessesTakenArr, wordToGuess, time, won)});
                         }
                     } else
@@ -239,11 +241,11 @@ module.exports =
                         if ((guessFromUniqueLetters(wordToGuess) - 4) - correctGuessesTakenNum(wordToGuess, _guessesTakenArr) == 1)
                         {
                             let mes = await(collected.channel.send('you just guessed the last letter, nice job! <:lao:792416659314180096>'));
-                            mes.delete({timeout:deleteTime, reaosn:reason});
+                            mesArr.push(mes);
                         } else
                         {
                             let mes = await(message.channel.send('woah, you guessed the whole word!'));
-                            mes.delete({timeout:deleteTime, reason: reason});
+                            mesArr.push(mes);
                         }
                     }
                 } else
@@ -251,20 +253,29 @@ module.exports =
                     guessCount--;
                     mainMessage.edit({embed:editEmbed(mainEmbed, underScores, guessCount, _guessesTakenArr, wordToGuess, time, won)})
                     let mes = await(message.channel.send('oops, that guess is incorrect'));
-                    mes.delete({timeout:deleteTime, reason:reason});
+                    mesArr.push(mes);
                 }
-                collected.delete({reason:reason});
+                if (mesArr.length > 4) niceDel(mesArr);
                 if (won == 1) collector.stop();
             } else
             {
                 won = 0;
+                if (mesArr.length > 4) niceDel(mesArr);
                 return collector.stop();
             }
         });
         collector.on('end', () =>
         {
-            UserJSON[message.author.id].games.hangman.gamesPlayed++;
+            mesArr.forEach(e => e.delete());
             UserJSON[message.author.id].games.hangman.playing = false;
+            if (UserJSON[message.author.id].games.hangman.startedANewGame == true)
+            {
+                let bruhEmbed = { title: 'this game was cancelled', description: `the word was ${wordToGuess}`, footer: { text: global.eft, icon_url: global.efi } };
+                mainMessage.edit({embed:bruhEmbed});
+                UserJSON[message.author.id].games.hangman.startedANewGame = false;
+                return writeToUsers();
+            }
+            UserJSON[message.author.id].games.hangman.gamesPlayed++;
             let timediff = new Date().getTime() - t1;
             UserJSON[message.author.id].cooldowns.hangman = new Date().getTime();
             mainMessage.edit({embed:editEmbed(mainEmbed, underScores, guessCount, _guessesTakenArr, wordToGuess, timediff, won)});
@@ -274,7 +285,7 @@ module.exports =
                 let x = (guessFromUniqueLetters(wordToGuess) - 4) - correctGuessesTakenNum(wordToGuess, _guessesTakenArr);
                 UserJSON[message.author.id].games.bal += Math.round(points(wordToGuess, x, guessCount, timediff));
             }
-            return fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+            return writeToUsers();
         });
     }
 }

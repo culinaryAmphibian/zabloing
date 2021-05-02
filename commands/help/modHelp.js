@@ -8,17 +8,16 @@ module.exports =
     name: 'modHelp', description: 'a lit of commands used for moderation',
     execute(message, prefix, args)
     {
-        let miscHelpEmbed =
+        let modHelpEmbed =
         {
             color: blueCol, title: 'a list of misceallaneous commands',
             fields: [
-                { name: `${prefix}av`, value: `fetches a user's profile picture - can work with user id (sometimes)`},
-                { name: `${prefix}say`, value: `says a specified string` },
-                { name: `${prefix}ignoreme`, value: `ignores your messages unless it's "${prefix}unignore"`},
-                { name: `${prefix}unignore`, value: `stops ignoring you if you were ignored in the first place`},
-                { name: `${prefix}help calc`, value: `did you know that this bad boy had a calculator :smirk:`}
+                { name: `${prefix}kick`, value: `kicks a user`},
+                { name: `${prefix}ban`, value: `bans a user` },
+                { name: `${prefix}purge`, value: `bulk-deletes messages`}
+                
             ], footer: {text: global.eft, icon_url: global.efi }
         };
-        return message.channel.send({embed:miscHelpEmbed});
+        return message.channel.send({embed:modHelpEmbed});
     }
 }

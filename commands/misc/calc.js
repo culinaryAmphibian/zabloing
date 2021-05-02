@@ -16,11 +16,12 @@ module.exports =
     execute(message, args)
     {
         if (!args[2]) return;
+        args[2] = parseInt(args[2]);
         let factor = Math.PI/180;
         if (args[3] == 'rad')
         {
             factor = 1;
-        }
+        } else args[3] = parseInt(args[3]);
         switch(args[1])
         {
             case 'add':
@@ -83,6 +84,10 @@ module.exports =
                         message.channel.send(Math.pow(args[2], args[3]));
                         break;
                 }
+                break;
+            case 'rem':
+                if (!args[3]) return;
+                message.channel.send(`${args[2] % args[3]}`);
                 break;
             case 'sin':
                 message.channel.send(Math.sin(args[2] * factor));

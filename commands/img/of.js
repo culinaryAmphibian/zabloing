@@ -1,5 +1,5 @@
 const config = require('../../DB/config.json');
-const Links = config["imageLinks"];
+const Links = config.imageLinks.images.of;
 module.exports =
 {
     name: 'of', description: ':flushed:',
@@ -7,7 +7,7 @@ module.exports =
     {
         message.react('😳');
         message.channel.send('onlyfans sent!');
-        message.channel.send({files:[{attachment:Links.of}]})
+        message.author.send({files:[{attachment:Links}]})
         .catch(() => { message.channel.send("I can't dm you :("); })
         return;
     }

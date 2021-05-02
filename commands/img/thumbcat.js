@@ -1,5 +1,5 @@
 const config = require('../../DB/config.json');
-const Link = config["imageLinks"].thumbsUpCat;
+const Link = config.imageLinks.videos.thumbsUpCat;
 
 module.exports =
 {

@@ -3,7 +3,7 @@ module.exports =
     name: 'count', description: 'counts to a specified number',
     execute(message, args, bot)
     {
-        if ((message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) && (message.guild.member(bot.user).hasPermission("MANAGE_MESSAGES")))
+        if ((message.member.hasPermission("MANAGE_MESSAGES")) && (message.guild.me.hasPermission("MANAGE_MESSAGES")))
         {
             if (args[1])
             {

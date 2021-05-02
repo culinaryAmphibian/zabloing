@@ -32,9 +32,9 @@ module.exports =
         switch(args[0])
         {
             case 'kick':    
-                if ((message.guild.member(bot.user).hasPermission("KICK_MEMBERS")) || (message.guild.member(bot.user).hasPermission('ADMINISTRATOR')))
+                if ((message.guild.me.hasPermission("KICK_MEMBERS")) || (message.guild.me.hasPermission('ADMINISTRATOR')))
                 {
-                    if ( (message.guild.member(message.author).hasPermission("KICK_MEMBERS")) || (message.guild.member(bot.user).hasPermission('ADMINISTRATOR')))
+                    if ( (message.member.hasPermission("KICK_MEMBERS")) || (message.member.hasPermission('ADMINISTRATOR')))
                     {
                         let mentioned = message.mentions.members.first();
                         if (mentioned)
@@ -43,15 +43,16 @@ module.exports =
                         } else if (args[1])
                         {
                             let query = args.slice(1).join(" ");
-                            let x = async (search.searchMember(message, query, true));
+                            let x = await(search.searchMember(message, query, true));
+                            // confirmation
                             return kick(x, message, args, bot);
                         } else return message.channel.send('who do you want me to kick?');
                     } else return message.channel.send('you don\'t have the perms lol');
                 } else return message.channel.send('i don\'t have the perms 🥲');
             case 'ban':
-                if ((message.guild.member(bot.user).hasPermission("KICK_MEMBERS")) || (message.guild.member(bot.user).hasPermission('ADMINISTRATOR')))
+                if ((message.guild.me.hasPermission("KICK_MEMBERS")) || (message.guild.me.hasPermission('ADMINISTRATOR')))
                 {
-                    if ( (message.guild.member(message.author).hasPermission("KICK_MEMBERS")) || (message.guild.member(bot.user).hasPermission('ADMINISTRATOR')))
+                    if ( (message.member.hasPermission("KICK_MEMBERS")) || (message.member.hasPermission('ADMINISTRATOR')))
                     {
                         let mentioned = message.mentions.members.first();
                         if (mentioned)

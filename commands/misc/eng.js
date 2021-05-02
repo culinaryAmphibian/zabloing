@@ -1,46 +1,81 @@
 const translate = require('@vitalets/google-translate-api');
+let config = require('../../DB/config.json');
+var langs = config["langlist"];
+var langsTwo = config["langListtwo"];
+//here
 
 let r = Math.floor(Math.random() * 50);
 let g = Math.floor(Math.random() * 100) + 50;
 let b = (Math.floor(Math.random() * 25) + 1) + 230;
 let blueCol = [r,g,b];
 
-var langs = { 'auto': 'Automatic', 'af': 'Afrikaans','sq': 'Albanian', 'am': 'Amharic', 'ar': 'Arabic', 'hy': 'Armenian','az': 'Azerbaijani','eu': 'Basque','be': 'Belarusian','bn': 'Bengali','bs': 'Bosnian','bg': 'Bulgarian','ca': 'Catalan','ceb': 'Cebuano','ny': 'Chichewa','zh-CN': 'Chinese (Simplified)','zh-TW': 'Chinese (Traditional)','co': 'Corsican','hr': 'Croatian','cs': 'Czech','da': 'Danish','nl': 'Dutch','en': 'English','eo': 'Esperanto','et': 'Estonian','tl': 'Filipino','fi': 'Finnish','fr': 'French','fy': 'Frisian','gl': 'Galician','ka': 'Georgian','de': 'German','el': 'Greek','gu': 'Gujarati','ht': 'Haitian Creole','ha': 'Hausa','haw': 'Hawaiian','he': 'Hebrew','iw': 'Hebrew','hi': 'Hindi','hmn': 'Hmong','hu': 'Hungarian','is': 'Icelandic','ig': 'Igbo','id': 'Indonesian','ga': 'Irish','it': 'Italian','ja': 'Japanese','jw': 'Javanese','kn': 'Kannada','kk': 'Kazakh','km': 'Khmer','ko': 'Korean','ku': 'Kurdish (Kurmanji)','ky': 'Kyrgyz','lo': 'Lao','la': 'Latin','lv': 'Latvian','lt': 'Lithuanian','lb': 'Luxembourgish','mk': 'Macedonian','mg': 'Malagasy','ms': 'Malay','ml': 'Malayalam','mt': 'Maltese','mi': 'Maori','mr': 'Marathi','mn': 'Mongolian','my': 'Myanmar (Burmese)','ne': 'Nepali','no': 'Norwegian','ps': 'Pashto','fa': 'Persian','pl': 'Polish','pt': 'Portuguese','pa': 'Punjabi','ro': 'Romanian','ru': 'Russian','sm': 'Samoan','gd': 'Scots Gaelic','sr': 'Serbian','st': 'Sesotho','sn': 'Shona','sd': 'Sindhi','si': 'Sinhala','sk': 'Slovak','sl': 'Slovenian','so': 'Somali','es': 'Spanish','su': 'Sundanese','sw': 'Swahili','sv': 'Swedish','tg': 'Tajik','ta': 'Tamil','te': 'Telugu','th': 'Thai','tr': 'Turkish','uk': 'Ukrainian','ur': 'Urdu','uz': 'Uzbek','vi': 'Vietnamese','cy': 'Welsh','xh': 'Xhosa','yi': 'Yiddish','yo': 'Yoruba','zu': 'Zulu'};
-
 module.exports =
 {
     name: 'eng', description: 'translates to english by default',
-    execute(message, args, prefix)
+    execute(message, args)
     {
-        if (!args[1]) return;
-        let literal;
-        let autoCorrected;
-        return (translate(message.content.substr(args[0].length + prefix.length + 1), {to:'en'})
-        .then(translated =>
+        if (!args[1]) return message.channel.send('please specify a query');
+        let fromLang;
+        let toLang;
+        let query;
+        if ((langs[args[1]] || langsTwo[args[1]]) && (args[1] !== 'auto'))
         {
-            switch(translated.raw[0][0])
+            if (langs[args[1]]) toLang = args[1];
+            else toLang = langsTwo[args[1]];
+            query = args.slice(2).join(" ");
+        } else
+        {
+            query = args.slice(1).join(" ");
+            toLang = 'en';
+        }
+        if (query.endsWith("``"))
+        {
+            if (query.slice(0, query.lastIndexOf("``").includes("``")))
             {
-                case null:
-                    literal = '';
-                    break;
-                default:
-                    literal = `(${translated.raw[0][0]} )`;
+                let afterFirstOccurrence = query.slice(query.indexOf("``") + 2);
+                let key = afterFirstOccurrence.slice(0, afterFirstOccurrence.indexOf("`"));
+                if ((langs[key] || langsTwo[key]) && (key !== 'auto'))
+                {
+                    if (langs[key]) fromLang = key;
+                    else fromLang = langsTwo[key];
+                    query = query.slice(0, query.indexOf("``"));
+                }
             }
-            switch(translated.from.text.autoCorrected.toString())
-            {
-                case 'false':
-                    autoCorrected = '';
-                    break;
-                case 'true':
-                    autoCorrected = ' (autocorrected) ';
-            }
+        }
+        if (!fromLang) fromLang = 'auto';
+        return translate(query, {to:toLang, from:fromLang}).then(translated =>
+        {
+            let inTheLanguage = '';
+            if (translated.raw[0][0] != null) inTheLanguage = translated.raw[0][0];
+            let autocorrect = '';
+            if (translated.from.text.autoCorrected != false) autocorrect = ` (autocorrected)`;
+            if (fromLang == 'auto') fromLang = langs[translated.from.language.iso].toLowerCase();
+            else fromLang = langs[fromLang].toLowerCase();
+            if (langs[toLang]) toLang = langs[toLang].toLowerCase();
+            wordType = '';
+            if (translated.raw[3][5][0][0][0]) wordType = translated.raw[3][5][0][0][0];
             let embed =
             {
-                color: blueCol, title: `"${translated.text}" ${literal}`, fields:
-                [ { name: 'from', value: `${langs[translated.from.language.iso].toLowerCase()} ${autoCorrected}`, inline: true}, { name: `to`, value: 'english', inline: true} ],
+                color: blueCol, title: `"${translated.text}" ${inTheLanguage} (${wordType})`,
+                fields:
+                [
+                    { name: `from`, value: fromLang, inline: true },
+                    { name: `to`, value: `${toLang.toLowerCase()}${autocorrect}`, inline: true},
+                    { name: 'other translations', value: `${translated.raw[3][5][0][0][1][0][0]}, ${translated.raw[3][5][0][0][1][1][0]}`}
+                ],
                 footer: { text: global.eft, icon_url: global.efi }
             };
-            return message.channel.send({embed:embed});
-        }));
+            message.channel.send({embed:embed});
+        })
     }
 }
+
+// possible other meanings
+// console.log(translated.raw[1][0][0][5][0][1]);
+// meh - console.log(translated.raw[1][4]);
+// console.log(translated.raw[3]);
+// word type at [3][5][0][0][0]
+// additional possible meanings at [3][5][0][0][1][x][0] of each
+// translations of additional meanings in [3][5][0][0][1][x][2][-1 < y < 6] of each // upper limit of y varies
+// some more of slightly different ones at [3][5][0][0][1][0][3]
+// and more at [3][5][0][0][1][0][4]

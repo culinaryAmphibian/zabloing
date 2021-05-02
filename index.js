@@ -1,15 +1,14 @@
 const Discord = require('discord.js');
-const bot = new Discord.Client({partials:['MESSAGE', 'CHANNEL', 'REACTION', 'GUILD_MEMBER', 'USER']});
+const bot = new Discord.Client();
 const fs = require('fs');
 const config = require('./DB/config.json');
 const secret = require('./DB/secret.json');
 const UserJSON = require('./DB/users.json');
-const prefix = '.';
+const ServerJSON = require('./DB/servers.json');
+let prefix = '.';
 
 const Distube = require('distube');
 bot.distube = new Distube(bot, {searchSongs:false, emitNewSongOnly:true});
-
-// let guild = bot.guilds.cache.size;
 
 bot.econCommands = new Discord.Collection();
 const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
@@ -71,6 +70,7 @@ bot.on('ready', () =>
 {
     console.log('Online.');
     bot.user.setPresence({ activity: { name: 'aaaaaa' }, status: 'idle' });
+    // bot.util.get('water').execute(bot);
 });
 
 bot.on("guildMemberAdd", member =>
@@ -91,10 +91,9 @@ bot.on('guildCreate', guild =>
 bot.on('message', async(message) =>
 {
     if (message.author.bot) return;
-    bot.util.get('userdb').execute(message, UserJSON, bot);
+    bot.util.get('userdb').execute(message, UserJSON, ServerJSON, bot);
     if (!message.guild) return;
-    // bot.util.get('water').execute(message, UserJSON);
-    if (!message.guild.member(bot.user).hasPermission('SEND_MESSAGES')) return message.author.send('I don\'t have the perms to send messages');
+    if (!message.guild.me.hasPermission('SEND_MESSAGES')) return message.author.send('I don\'t have the perms to send messages');
     var args = message.content.substr(prefix.length).toLowerCase().split(' ');
     if (UserJSON[message.author.id].ignore == true)
     {
@@ -106,65 +105,74 @@ bot.on('message', async(message) =>
         }
     }
     // w/o prefix
-    if (message.content.includes('thankus')) message.channel.send(config.imageLinks.thankus);
-    if (message.content.includes('lisa')) message.channel.send(config.imageLinks.lisa);
-    if (message.content.includes('birth')) message.channel.send(config.imageLinks.birth);
-    if (message.content == 'why') return message.channel.send(config.imageLinks.why);
-    if (message.content == 'sori') return message.channel.send({files:[{attachment:config.imageLinks.sori}]});
-    if (message.content == 'me lon') return message.channel.send(config.imageLinks.melon);
-    if (message.content == 'le mon') return message.channel.send(config.imageLinks.lemon);
-    if (message.content == 'le fishe') return message.channel.send({files:[{attachment:config.imageLinks.lefishe}]})
-    if (message.content.includes('femboy')) message.channel.send(config.imageLinks.femboy);
-    if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.madCatDrip);
-    if (message.content.includes('👍')) bot.imgCommands.get('thumbcat').execute(message);
+    if (message.guild.id == '771350615560290335')
+    {
+        if (message.content.includes('thankus')) message.channel.send(config.imageLinks.images.thankus);
+        if (message.content.includes('lisa')) message.channel.send(config.imageLinks.images.lisa);
+        if (message.content.includes('birth')) message.channel.send(config.imageLinks.images.birth);
+        if (message.content == 'why') return message.channel.send(config.imageLinks.images.why);
+        if (message.content == 'sori') return message.channel.send({files:[{attachment:config.imageLinks.videos.sori}]});
+        if (message.content == 'me lon') return message.channel.send(config.imageLinks.images.melon);
+        if (message.content == 'le mon') return message.channel.send(config.imageLinks.images.lemon);
+        if (message.content.includes('femboy')) message.channel.send(config.imageLinks.images.femboy);
+        if (message.content.toLowerCase().includes('mad cat drip')) message.channel.send(config.imageLinks.images.madCatDrip);
+        if (message.content.includes('👍')) bot.imgCommands.get('thumbcat').execute(message);
+    }
+    if (message.content == 'le fishe') return message.channel.send({files:[{attachment:config.imageLinks.videos.lefishe}]});
     if (message.content.includes(`<@!${bot.user.id}>`)) message.channel.send(`Hi! My prefix is ${prefix}`);
     // if (message.content.toLowerCase().startsWith('setprefix'))
     if (!message.content.startsWith(prefix)) return;
 
     global.eft = message.author.username;
     global.efi = message.author.displayAvatarURL({dynamic:true});
+    global.currency = 'points';
+
     let a = args[0];
-    if (a == 'zabloing') return message.channel.send(config.imageLinks.zabloing);
-    if (a == 'googas') return message.channel.send(config.imageLinks.googas);
-    if (a == 'gronch') return message.channel.send(config.imageLinks.gronch);
-    if (a == 'lfao') return message.channel.send(config.imageLinks.lfao);
-    if (['lao, laoo'].includes(a)) return message.channel.send(config.imageLinks.lao);
-    if (a == 'spong') return message.channel.send(config.imageLinks.spong);
-    if (a == 'ganca') return message.channel.send(config.imageLinks.thankus);
+    if (config.imageLinks.images[a]) return message.channel.send(config.imageLinks.images[a]);
+    if (config.imageLinks.videos[a]) return message.channel.send(config.imageLinks.videos[a]);
+
+    if (a == 'john') return message.channel.send(`<:john:822616260638408724>`);
+
     if (a == 'onlyfans') return bot.imgCommands.get('of').execute(message);
-    if (a == 'single') return message.channel.send(config.imageLinks.single);
-    if (a == 'sessogatto') return message.channel.send(config.imageLinks.sessogatto);
-    if (a == 'snowducc') return message.channel.send(config.imageLinks.snowducc);
-    if (a == 'zingus') return message.channel.send(config.imageLinks.zingus);
-    if (a == 'gangstaspongebob') return message.channel.send(config.imageLinks.gangstaspongebob);
-    if (a == 'thursday') return message.channel.send({files:[{attachment:config.imageLinks.thursday}]});
     if (a == 'chiro') return bot.imgCommands.get('chiro').execute(message, args);
-    if (a == 'kai')return bot.imgCommands.get('kai').execute(message, args);
+    if (a == 'kai') return bot.imgCommands.get('kai').execute(message, args);
     if (a == 'shishcat') return bot.imgCommands.get('shish').execute(message, args);
     if (a == 'istella') return bot.imgCommands.get('istella').execute(message, args);
     if (a == 'floppa') return bot.imgCommands.get('floppa').execute(message, args);
-    if (a == 'woo') return message.channel.send({files:[{attachment:Link}]});
+
+    if (a == 'bal') return bot.econCommands.get('bal').execute(message, args, UserJSON, bot);
+    if (a == 'pay') return bot.econCommands.get('pay').execute(message, args, bot);
+    if (a == 'daily') return bot.econCommands.get('daily').execute(message, UserJSON);
+    if (a == 'leaderboard') return bot.econCommands.get('lb').execute(message, args, UserJSON);
+    
+    if (a == 'help') return bot.helpCommands.get('help').execute(message, args, prefix, bot);
+
     if (a == 'av') return bot.miscCommands.get('av').execute(message, args, prefix);
     if (a == 'say') return bot.miscCommands.get('say').execute(message, prefix);
-    if (a == 'hm') return bot.miscCommands.get('hangman').execute(message, args);
-    if (a == 'count') return bot.miscCommands.get('count').execute(message, args, bot);
     if (a == 'ignoreme') return bot.miscCommands.get('ignore').execute(message, args, UserJSON);
     if (a == 'ping') return bot.miscCommands.get('ping').execute(message, bot);
-    if (a == 'addemoji') return bot.miscCommands.get('addemoji').execute(message, args, bot);
-    if (a == 'help') return bot.helpCommands.get('help').execute(message, args, prefix, bot);
+    if (a == 'addemoji') return bot.miscCommands.get('addemoji').execute(message, args);
     if (a == 'calc') return bot.miscCommands.get('calc').execute(message, args);
     if (a == 'firstmsg') return bot.miscCommands.get('firstmsg').execute(message, args);
     if (a == 'serverinfo') return bot.miscCommands.get('serverInfo').execute(message);
-    if (a == 'bal') return bot.econCommands.get('bal').execute(message, args, UserJSON, bot);
+    if (a == 'ui') return bot.miscCommands.get('userinfo').execute(message, args);
+    if (a == 'emoji') return bot.miscCommands.get('emojiUrl').execute(message, args, bot);
     if (['play', 'p', 'loop', 'skip', 'stop', 'pause', 'dc', 'leave', 'q', 'queue'].includes(a))
         return bot.miscCommands.get('musicHandler').execute(message, args, bot);
-    if (a == 'eng') return bot.miscCommands.get('eng').execute(message, args, prefix);
+    if (a == 'translate') return bot.miscCommands.get('eng').execute(message, args);
     if (a == 'image') return bot.miscCommands.get('googleImages').execute(message, args);
+    if (a == 'idk') return bot.miscCommands.get('hangman').execute(message);
+    if (['color', 'colour'].includes(a)) return bot.miscCommands.get('col').execute(message, args);
+    if (a == 'count') return bot.miscCommands.get('count').execute(message, args);
+
     if (a == 'purge') return bot.modCommands.get('purge').execute(message, args, bot);
     if (['kick', 'ban'].includes(a)) return bot.modCommands.get('kickban').execute(message, args, bot);
-    if (a == 'idk') return bot.miscCommands.get('hangman').execute(message);
-    if (a == 'john') return message.channel.send(`<:john:822616260638408724>`);
+
     if (a == 'tuf') return bot.testCommands.get('testingUserFinding').execute(message, args);
+    if (a == 'cptch') return bot.testCommands.get('captcha').execute(message);
+    
+    if (a == 'addcmd') bot.util.get('addCmd').execute(message, args);
+
     if (a == 'kill')
     {
         if (message.author.id !== '550886249309929472') return;

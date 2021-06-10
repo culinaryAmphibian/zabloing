@@ -1,10 +1,8 @@
-const img = require('images-scraper');
-const google = new img({puppeteer:{headless:true}});
+const gis = require('g-i-s');
 const fs = require('fs');
 const UserJSON = require('../../DB/users.json');
-const config = require('../../DB/config.json');
+const cooldown = require('../../DB/config.json').cooldowns.misc.googleImages;
 const secretJSON = require('../../DB/secret.json');
-const cooldown = config["cooldowns"].misc.googleImages;
 
 let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
 let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
@@ -28,8 +26,13 @@ module.exports =
         let query = args.slice(1).join(" ");
         errEmbed.description = 'your query contained a bad word >:(';
         if (secretJSON.badWords.find(badWord => query.includes(badWord))) return message.channel.send({embed:errEmbed});
-        let results = await google.scrape(query, 4);
-        message.channel.send(results[Math.floor(Math.random() * results.length)].url);
+        gis(query, res);
+        function res(error, results)
+        {
+            errEmbed.description = 'sorry, an error occurred.';
+            if (error) return message.channel.send({embed: errEmbed});
+            message.channel.send(results[Math.floor(Math.random() * 5)].url);
+        }
         UserJSON[message.author.id].cooldowns.googleImages = new Date().getTime();
         return fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
     }

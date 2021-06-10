@@ -14,7 +14,7 @@
 
 [![a](https://img.shields.io/badge/now%20what-i'm%20not%20sure-811ad8.svg)]()
 
-[![a](https://img.shields.io/badge/crab-cowboy-2b2299.svg)]()
+[![a](https://img.shields.io/badge/hotel-trivago-2b2299.svg)]()
 
 [![a](https://img.shields.io/badge/did%20i%20just%20make%20a%20rainbow-perhaps%20\:\)-009900.svg)]()
 

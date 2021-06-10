@@ -18,7 +18,7 @@
 
 [![a](https://img.shields.io/badge/did%20i%20just%20make%20a%20rainbow-perhaps%20\:\)-009900.svg)]()
 
-[![a](https://img.shields.io/youtube/views/dQw4w9WgXcQ?color=blue&label=yutub&logo=youtube&logoColor=blue&style=plastic)]()
+[![a](https://img.shields.io/youtube/views/dQw4w9WgXcQ?color=blue&label=yutub&logo=youtube&logoColor=blue&style=plastic)](https://youtube.com/watch?v=dQw4w9WgXcQ)
 
 [![a](https://img.shields.io/badge/version-0.5-009900.svg)]()
 

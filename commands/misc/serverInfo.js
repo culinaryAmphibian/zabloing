@@ -35,7 +35,7 @@ let region = {'hongkong':'hong kong', 'southafrica': 'south africa', 'us-central
 
 module.exports =
 {
-    name: 'serverInfo', description: 'server info',
+    name: ['serverinfo'], description: 'displays info about the server',
     async execute(message)
     {
         let icon = message.guild.iconURL({dynamic:true, size: 4096});
@@ -132,7 +132,7 @@ module.exports =
                 { name: `${bots.size} total bots`, value: `online[${onlineBots}] \n offline [${offlineBots.size}]`, inline:true},
                 { name: 'bans', value: `${bans.size} bans:\n${bansStr}`, inline: true },
                 { name: `${total} channels (including categories)`, value: `text channels [${textChannels}] \n  voice channels [${voiceChannels}] \n category channels [${categories}]`, inline: false},
-            ], footer: {text:global.eft, iconURL: global.efi}
+            ], footer: global.footer
         };
 
         if (allRoles.size > 0) embed.fields.push({name: `${allRoles.size} total roles`, value: `roles in order of highest to lowest:\n${rolesStr}`, inline: true});

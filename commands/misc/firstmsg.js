@@ -7,7 +7,7 @@ let blueCol = [r,g,b];
 
 module.exports =
 {
-    name: 'firstmsg', description: 'fetches the first message of a channel',
+    name: ['firstmsg'], description: 'fetches the first message of the channel', note: 'keep in mind that it fetches the first message of the channel, not of the server.',
     async execute(message)
     {
         const fetchMessages = await(message.channel.messages.fetch({after:1, limit:1}));
@@ -18,7 +18,7 @@ module.exports =
             description: `the first in ${message.channel}`, fields:
             [
                 {name: 'content', value: `"${msg.content}"`}, {name: 'author', value: `${msg.author} (${message.author.id})`}, {name: 'date', value: `${dateFormat(msg.createdTimestamp, 'default', true)} UTC`}
-            ], footer: {text:global.eft, icon_url:global.efi}
+            ], footer: global.footer
         };
         return message.channel.send({embed:embed});
     }

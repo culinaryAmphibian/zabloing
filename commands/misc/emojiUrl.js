@@ -1,4 +1,3 @@
-//make it an embed with all the info
 const dateFormat = require('dateformat');
 
 let r = Math.floor(Math.random() * 50);
@@ -6,19 +5,20 @@ let g = Math.floor(Math.random() * 100) + 50;
 let b = (Math.floor(Math.random() * 25) + 1) + 230;
 let blueCol = [r,g,b];
 
-r = (Math.floor(Math.random() * 25) + 1) + 230;
-g = 100 + (Math.floor(Math.random() * 40) + 1);
-b = (Math.floor(Math.random() * 35) + 1)
-orangeCol = [r,g,b];
+let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
+let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
+let o_b = (Math.floor(Math.random() * 35) + 1)
+let orangeCol = [o_r,o_g,o_b];
 
+let errEmbed = {color: orangeCol, title: 'error', description: 'please specify an emoji', footer: global.footer};
 const bth = { false: 'no', true: 'yes' };
 
 module.exports =
 {
-    name: 'emojiUrl',
+    name: ['emoji'], description: 'displays info about an emoji', usage: '[pref]emoji <emoji>\nexample: [pref]emoji <:john:822616260638408724>', note: 'this does **not** work with default emoji, like :no_mouth:',
     async execute(message, args, bot)
     {
-        if (!args[1]) return;
+        if (!args[1]) return message.channel.send({embed:errEmbed});
         if (args[1].match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/))
         {
             let emojiCache = bot.emojis.cache;
@@ -30,8 +30,7 @@ module.exports =
                 thumbnail: {url: `https://discordapp.com/emojis/${emojiId}.gif`},
                 description: 'sorry, i couldn\'t find that emoji, so i can\'t fetch all of its info.\nit will appear as a thumnbail if it is animated', 
                 image: {url: `https://discordapp.com/emojis/${emojiId}.png` },
-                fields: [ { name: 'id', value: emojiId } ],
-                footer: { text: global.eft, icon_url: global.efi }
+                fields: [ { name: 'id', value: emojiId } ], footer: global.footer
             };
             if ((!emoj) || (!emoj.available)) return message.channel.send({embed:oopEmbed});
             let initAuthor = await(emoj.fetchAuthor());
@@ -46,8 +45,7 @@ module.exports =
                 [
                     { name: 'date created', value: `${h} days ago\n${dateFormat(emoj.createdAt, 'default', true)} UTC`},
                     { name: 'id', value: emoj.id}, {name: 'does it require colons?', value: bth[emoj.requiresColons ] },
-                    { name: 'author', value: initAuthor } ],
-                footer: { text: global.eft, icon_url: global.efi }
+                    { name: 'author', value: initAuthor } ], footer: global.footer
             };
             if (emoj.roles.cache.size > 0)
             {

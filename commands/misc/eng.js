@@ -9,12 +9,20 @@ let g = Math.floor(Math.random() * 100) + 50;
 let b = (Math.floor(Math.random() * 25) + 1) + 230;
 let blueCol = [r,g,b];
 
+let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
+let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
+let o_b = (Math.floor(Math.random() * 35) + 1)
+let orangeCol = [o_r,o_g,o_b];
+
+let errEmbed = {color: orangeCol, title: 'error', description: 'please specify a query', footer: global.footer};
+
 module.exports =
 {
-    name: 'eng', description: 'translates to english by default',
+    name: ['translate'], description: 'translates a query', usage: '[pref]translate ?<code or name of the language to translate to> <query> ?``<name or code of the language to translate from>``\nexample: [pref]translate ',
+    note: 'the first optional parameter defaults to english, so your query will be translated to english by default\n\na full list of accepted language codes can be found here: [wikipedia - iso 639-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)\n\nsince a language to translate ***to*** is not required, you may have to write the language name/code twice; for example if i want to get the word spanish in spanish i would need to do ``[pref]translate spanish spanish`` because the first time spanish is written, it tells the parser to use that as the language code because it is a valid language code.\n\na query is not optional.\n\nnote that, to specify a language to translate ***from***, a language name or code has to be surrounded by double backticks and be the last parameter, it defaults to whatever google translate detects.',
     execute(message, args)
     {
-        if (!args[1]) return message.channel.send('please specify a query');
+        if (!args[1]) return message.channel.send({embed:errEmbed});
         let fromLang;
         let toLang;
         let query;
@@ -30,7 +38,7 @@ module.exports =
         }
         if (query.endsWith("``"))
         {
-            if (query.slice(0, query.lastIndexOf("``").includes("``")))
+            if (query.slice(0, query.lastIndexOf("``")).includes("``"))
             {
                 let afterFirstOccurrence = query.slice(query.indexOf("``") + 2);
                 let key = afterFirstOccurrence.slice(0, afterFirstOccurrence.indexOf("`"));
@@ -53,18 +61,17 @@ module.exports =
             else fromLang = langs[fromLang].toLowerCase();
             if (langs[toLang]) toLang = langs[toLang].toLowerCase();
             wordType = '';
-            if (translated.raw[3][5][0][0][0]) wordType = translated.raw[3][5][0][0][0];
+            if (translated.raw[3]) wordType = `(${translated.raw[3][5][0][0][0]})`;
             let embed =
             {
-                color: blueCol, title: `"${translated.text}" ${inTheLanguage} (${wordType})`,
+                color: blueCol, title: `"${translated.text}" ${inTheLanguage} ${wordType}`,
                 fields:
                 [
                     { name: `from`, value: fromLang, inline: true },
                     { name: `to`, value: `${toLang.toLowerCase()}${autocorrect}`, inline: true},
-                    { name: 'other translations', value: `${translated.raw[3][5][0][0][1][0][0]}, ${translated.raw[3][5][0][0][1][1][0]}`}
-                ],
-                footer: { text: global.eft, icon_url: global.efi }
+                ], footer: global.footer
             };
+            if (translated.raw[3]) embed.fields.push({ name: 'other translations', value: `${translated.raw[3][5][0][0][1][0][0]}, ${translated.raw[3][5][0][0][1][1][0]}`});
             message.channel.send({embed:embed});
         })
     }

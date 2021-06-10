@@ -1,28 +1,29 @@
+const Discord = require('discord.js');
+const fs = require('fs');
+const Config = require('../../DB/config.json');
+
+
+const econCommands = new Discord.Collection();
+const econCommandFiles = fs.readdirSync('./commands/econ/').filter(file => file.endsWith('.js'));
+for(const econFile of econCommandFiles)
+{
+    const econCommand = require(`../econ/${econFile}`);
+    econCommands.set(econCommand.name, econCommand);
+}
+
 let r = (Math.floor(Math.random() * 50)) + 1;
 let g = (Math.floor(Math.random() * 54)) + 201;
 let b = (Math.floor(Math.random() * 40)) + 40;
-greenCol = [r,g,b];
-
-let e = `user mention, username/nickname, or user id`
+let greenCol = [r,g,b];
 
 module.exports =
 {
-    name: 'econHelp',
-    execute(message, prefix, args)
+    name: 'econ', hide: true, description: 'a list of the economy game commands',
+    execute(message, prefix)
     {
-        // if (args[1]) return;
-        let embed =
-        {
-            color: greenCol, title: `a list of commands to play the economy game`,
-            fields:
-            [
-                { name: `${prefix}bal`, value: `checks a user\'s amount of ${global.currency}\nusage: ${prefix}bal <${e}>` },
-                { name: `${prefix}lb`, value: `display's the server's leaderboard\n avalilable options: "w/l", "${global.currency}", and "played"; defaults to ${global.currency}\nusage: ${prefix}lb <option>`},
-                { name: `${prefix}pay`, value: `a command for you to pay a user a certain amount of ${global.currency}\nusage: ${prefix}pay <amount of ${global.currency}> <${e}>` },
-                { name: `${prefix}daily`, value: `claims your daily reward of ${global.currency}`},
-                { name: `wait, so how do i get the points?`, value: `collect daily rewards and win the hangman game when you play it (${prefix}idk)`}
-            ], footer: { text: global.eft, icon_url: global.efi }
-        };
-        return message.channel.send({embed:embed});
+        let embed2 = { color: greenCol, title: 'economy game commands', fields: [], footer: { name: global.eft, icon_url: global.efi } }
+        econCommands.each(c => embed2.fields.push({name: `${prefix}${c.name.shift()}`, value: c.description.replace(/\[pref\]/gi, prefix).replace(/\[curr\]/gi, Config.currency)}));
+        embed2.fields.push({name: `wait, so how do i get the points?`, value: `collect daily rewards and win the hangman game when you play it (${prefix}idk)`});
+        return message.channel.send({embed:embed2});
     }
 }

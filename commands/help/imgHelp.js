@@ -1,3 +1,16 @@
+const Discord = require('discord.js');
+const fs = require('fs');
+const config = require('../../DB/config.json');
+const ServerJSON = require('../../DB/servers.json');
+
+const imgCommands = new Discord.Collection();
+const imgCommandFiles = fs.readdirSync('./commands/img/').filter(file => file.endsWith('.js'));
+for(const imgFile of imgCommandFiles)
+{
+    const imgCommand = require(`../img/${imgFile}`);
+    imgCommands.set(imgCommand.name, imgCommand);
+}
+
 let r = Math.floor(Math.random() * 50);
 let g = Math.floor(Math.random() * 100) + 50;
 let b = (Math.floor(Math.random() * 25) + 1) + 230;
@@ -5,20 +18,20 @@ let blueCol = [r,g,b];
 
 module.exports =
 {
-    name: 'imgHelp', description: 'list of image commands',
+    name: 'img', description: 'a list of image commands', hide: true,
     execute(message)
     {
-        let imgHelpEmbed =
+        let emded = {color: blueCol, title: 'a list of image commands', fields: [], footer: global.footer};
+        emded.fields.push({ name: `just images`, value: Object.keys(config.imageLinks.images).filter(a => !config.imageLinks.images[a].endsWith('gif')).join(', ')});
+        emded.fields.push({name: 'gifs/videos', value: Object.keys(config.imageLinks.images).filter(a => config.imageLinks.images[a].endsWith('gif')).concat(Object.keys(config.imageLinks.videos)).join(', ')});
+        emded.fields.push({name: 'special commands', value: imgCommands.filter(c => !c.hide).map(c => c.name[0]).join(', ')});
+        if (ServerJSON[message.guild.id].cmds.find(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi)))
         {
-            color: blueCol, title: 'a list of image commands',
-            fields: [
-                {name: 'Commands that do not require a prefix', value: `thankus, lisa, birth, why, sori, me lon, femboy, mad cat drip, 👍`},
-                {name: `Commands that *do* require a prefix`, value: `_____________`},
-                { name: `just images`, value: `zabloing, googas, gronch, lao, lfao, spong, ganca, single, sessogatto`},
-                { name: `gifs/videos`, value: `snowducc, zingus, woo, thursday`, inline: true},
-                { name: 'special image commands', value: `onlyfans, shishcat, chiro, kai, istella, floppa`, inline: true}
-            ], footer: { text: global.eft, icon_url: global.efi }
-        };
-        return message.channel.send({embed:imgHelpEmbed});
+            let x = [];
+            ServerJSON[message.guild.id].cmds.filter(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi))
+            .forEach(j => x.push(j.name));
+            emded.fields.push({name: 'commands in your server', value: x.join(', ')});
+        }
+        return message.channel.send({embed:emded});
     }
 }

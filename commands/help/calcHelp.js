@@ -5,7 +5,7 @@ let blueCol = [r,g,b];
 
 module.exports =
 {
-    name: 'calcHelp', description: 'list of calculator functions',
+    name: 'calc', description: 'list of calculator functions', hide: true,
     execute(message, prefix, args)
     {
         if (!args[2])
@@ -16,8 +16,7 @@ module.exports =
                     { name: `all the basic operations`, value: `addition (add), subtraction (subtract), multiplication (mult), division (div)`},
                     { name: `slightly more advanced operations`, value: `squareroot (sqrt), factorials (!), exponents (exp)`},
                     { name: `trigonometric functions`, value: `sin, cos, tan, asin, acos, atan`},
-                    { name: `for syntax help:`, value: `do ${prefix}help calc < operator >`}
-                ], footer: { text: global.eft, icon_url: global.efi }
+                    { name: `for syntax help:`, value: `do ${prefix}help calc < operator >`}], footer: global.footer
             };
             return message.channel.send({embed:calcHelpEmbed});
         }

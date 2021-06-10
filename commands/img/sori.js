@@ -3,7 +3,7 @@ const Links = config.imageLinks.videos.sori;
 
 module.exports =
 {
-    name: 'sori', description: 'sadcats',
+    name: ['sori'], description: 'sadcats',
     execute(message)
     {
         message.react('😢');

@@ -4,7 +4,7 @@ let lastIdx = -1;
 
 module.exports =
 {
-    name: 'floppa', description: "gregory",
+    name: ['floppa'], description: "gregory",
     execute(message, args)
     {
         let num;

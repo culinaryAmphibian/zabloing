@@ -66,7 +66,6 @@ const activityType =
     COMPETING: 'competing'
 };
 
-
 function weirdS(num)
 {
     if (num == 1) return '';
@@ -92,7 +91,7 @@ function yearsDaysMinutes(msDiff)
 
 module.exports =
 {
-    name: 'userinfo', description: 'displays information about a user',
+    name: ['ui', 'userinfo'], description: 'displays information about a user', usage: '[pref]ui ?<mention, id, nickname, username, tag>\nexample: [pref]ui jeff#0001',
     async execute(message, args)
     {
         let target;

@@ -142,7 +142,7 @@ function editEmbed(embed, underScores, guessesLeft, guessArr, wordToGuess, time,
             embed.fields =
             [
                 { name: 'time', value: `${Math.round(time/1000)} seconds`},
-                { name: `${global.currency} earned`, value: Math.round(points(wordToGuess, x, guessesLeft, time))}
+                { name: `${config.currency} earned`, value: Math.round(points(wordToGuess, x, guessesLeft, time))}
             ];
             break;
         }
@@ -171,7 +171,7 @@ function editEmbed(embed, underScores, guessesLeft, guessArr, wordToGuess, time,
 
 module.exports =
 {
-    name: 'hangman', description: 'hangman game',
+    name: ['idk'], description: 'hangman game',
     async execute(message)
     {
         let jsoncheck = await(JSONCheck(message.author.id, message.channel));
@@ -192,8 +192,7 @@ module.exports =
             color: blueCol, title: underScores, description: `good luck!`,
             image: { url: hangmanImg[0] },
             fields: [ { name: 'word length', value: wordToGuess.length },
-            { name: 'guesses', value: guessCount} ],
-            footer: {text: global.eft, icon_url: global.efi}
+            { name: 'guesses', value: guessCount} ], footer: global.footer
         };
         const mainMessage = await(message.channel.send({embed:mainEmbed}));
         let t1 = UserJSON[message.author.id].cooldowns.hangman;
@@ -270,7 +269,7 @@ module.exports =
             UserJSON[message.author.id].games.hangman.playing = false;
             if (UserJSON[message.author.id].games.hangman.startedANewGame == true)
             {
-                let bruhEmbed = { title: 'this game was cancelled', description: `the word was ${wordToGuess}`, footer: { text: global.eft, icon_url: global.efi } };
+                let bruhEmbed = { title: 'this game was cancelled', description: `the word was ${wordToGuess}`, footer: global.footer };
                 mainMessage.edit({embed:bruhEmbed});
                 UserJSON[message.author.id].games.hangman.startedANewGame = false;
                 return writeToUsers();

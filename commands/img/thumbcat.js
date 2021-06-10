@@ -1,9 +1,9 @@
 const config = require('../../DB/config.json');
-const Link = config.imageLinks.videos.thumbsUpCat;
+const Link = config.imageLinks.videos.thumbsupcat;
 
 module.exports =
 {
-    name: 'thumbcat', description: 'e',
+    name: ['thumbcat'], description: 'e',
     execute(message)
     {
         message.react('👍');

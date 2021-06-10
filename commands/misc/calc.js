@@ -1,3 +1,10 @@
+let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
+let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
+let o_b = (Math.floor(Math.random() * 35) + 1)
+let orangeCol = [o_r,o_g,o_b];
+
+let errEmbed = {color: orangeCol, title: 'error', description: 'please enter a second argument', footer: global.footer};
+
 function arg(args)
 {
     if (!isNaN(args[2]))
@@ -12,16 +19,15 @@ function arg(args)
 
 module.exports =
 {
-    name: 'calc', description: 'calculator',
+    name: ['calc'], description: 'basic calculator', usage: '[pref]calc <add/subtract/mult/div/sqrt/!/exp/rem/sin/cos/tan> <number> ?<second number> ?<rad>\nexample: [pref]calc div 15 4',
+    note: '! gets the factorial of a number, rem gets the remainder from number 1 divided by number 2.\na second number might be required depending on the operation\nrad is only for trig operations because the answer defaults to degrees.',
     execute(message, args)
     {
-        if (!args[2]) return;
+        if (!args[2]) return message.channel.send({embed:errEmbed});
         args[2] = parseInt(args[2]);
         let factor = Math.PI/180;
-        if (args[3] == 'rad')
-        {
-            factor = 1;
-        } else args[3] = parseInt(args[3]);
+        if (args[3] == 'rad') factor = 1;
+        else args[3] = parseInt(args[3]);
         switch(args[1])
         {
             case 'add':

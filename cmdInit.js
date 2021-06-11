@@ -6,6 +6,7 @@ module.exports =
     name: 'cmdInit', hide: true,
     execute(bot)
     {
+        console.log('on');
         bot.commands = new Discord.Collection();
         fs.readdirSync('./commands/')
         .forEach(folder => fs.readdirSync(`./commands/${folder}/`)

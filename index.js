@@ -3,7 +3,6 @@ const bot = new Discord.Client();
 const ConfigJSON = require('./DB/config.json');
 const SecretJSON = require('./DB/secret.json');
 const ServerJSON = require('./DB/servers.json');
-require('./cmdInit').execute(bot);
 // bot.on('guildBanAdd', (guild, user) => console.log(`${user.tag} was banned from ${guild.name} :(`));
 bot.on('guildCreate', guild => bot.commandsForInternalProcesses.get('guildCreate').execute(bot, guild));
 bot.on('guildMemberAdd', member => bot.commandsForInternalProcesses.get('guildMemberAdd').execute(bot, member));
@@ -14,7 +13,7 @@ bot.on('guildMemberRemove', member => bot.commandsForInternalProcesses.get('guil
 // bot.on('messageUpdate', (oldMessage, newMessage) => console.log(`a message has been updated.`));
 // bot.on('rateLimit', rateLimitInfo => console.log(`i am being rate-limited; here are the details:\n${rateLimitInfo}`));
 // bot.on('warn', info => console.log(`warning:\n${info}`));
-bot.on('ready', () => console.log('on'));
+bot.on('ready', () => require('./cmdInit').execute(bot));
 bot.on('message', async(message) =>
 {
     if (message.author.bot) return;

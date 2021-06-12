@@ -38,8 +38,8 @@ bot.on('message', async(message) =>
     return bot.commandsForInternalProcesses.get('arbImg').execute(message, a);
     if (ServerJSON[message.guild.id].cmds?.map?.(c => c.name).includes?.(args.join(" ")))
     return bot.commandsForInternalProcesses.get('custom').execute(message, bot);
-    if (bot.commands.find(c => c.name.includes(a)))
-    return bot.commands.find(c => c.name.includes(a)).execute(message, args, bot);
+    let command = bot.commands.find(c => c.name.includes(a))
+    if (command) return command.execute(message, args, bot);
 });
 
 bot.login(SecretJSON.token);

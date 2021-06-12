@@ -1,5 +1,6 @@
 const fs = require('fs');
 const UserJSON = require('../../DB/users.json');
+const ServerJSON = require('../../DB/servers.json');
 
 module.exports =
 {
@@ -13,6 +14,9 @@ module.exports =
         if (!id.games) id.games = {bal: 0};
         if (!id.msgs) id.msgs = 0;
         id.msgs++;
-        return fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
+        fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
+        if (ServerJSON[message.guild.id].log?.filter?.(a => a.type == 'namechange').pop().newName !== message.guild.name)
+        ServerJSON[message.guild.id].log?.push?.({type: 'namechange', time: new Date().getTime(), newName: message.guild.name});
+        return fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
     }
 }

@@ -13,8 +13,9 @@ module.exports =
         if (message.author.id != message.guild.ownerID) return message.channel.send('only the server owner can change the prefix.');
 
         let newPrefLen = message.content.lastIndexOf('setprefix');
-        if (newPrefLen > 2) 
-        return message.channel.send('please keep the prefix to a length of 3 characters.');
+        let newPref = message.content.slice(0, newPrefLen);
+        if (!newPref) return message.channel.send('the prefix has to be at least 1 character long.')
+        if (newPref.length > 3) return message.channel.send('please keep the prefix to a maximum length of 3 characters.');
         ServerJSON[message.guild.id].prefix = message.content.slice(0, newPrefLen);
         if (!ServerJSON[message.guild.id].prefixEdits) ServerJSON[message.guild.id].prefixEdits = [];
         ServerJSON[message.guild.id].prefixEdits.push({author: message.author.id, time: new Date().getTime(), changedTo: ServerJSON[message.guild.id].prefix});

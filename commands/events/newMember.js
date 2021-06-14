@@ -4,11 +4,6 @@ const fs = require('fs');
 const ServerJSON = require('../../DB/servers.json');
 const UserJSON = require('../../DB/users.json');
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 function placeText(canvas, text, width)
 {
     const ctx = canvas.getContext('2d');
@@ -100,7 +95,7 @@ function yearsDaysMinutes(msDiff)
     else return `${seconds} second${weirdS(seconds)} (${msDiff} milliseconds) ago`;
 }
 
-let embed = {color: blueCol, title: 'welcome, ', description: '', image: {url: ''}, fields: []};
+let embed = {color: global.blueCol, title: 'welcome, ', description: '', image: {url: ''}, fields: []};
 
 module.exports =
 {
@@ -108,7 +103,9 @@ module.exports =
     async execute(bot, member)
     {
         if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
-        if (!UserJSON[member.user.id].servers.includes(member.guild)) UserJSON[member.user.id].servers.push(member.guild.id);
+        if (!UserJSON[member.user.id].servers.map(s => s?.guildId).includes(member.guild.id)) UserJSON[member.user.id].servers.push({guildId: member.guild.id, time: new Date().getTime(), joins: 0});
+        UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).currentlyInThere = true;
+        UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).joins++;
         fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
         embed.title += `${member.user.tag}!`;
         embed.description = `${member} (${member.id}) is the ${ordinal(member.guild.memberCount)} member of this server.`;

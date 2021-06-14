@@ -1,10 +1,4 @@
 const dateFormat = require('dateformat');
-
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 // fetchBans.size(), vanity stuff
 
 function weirdS(num)
@@ -118,7 +112,7 @@ module.exports =
             
         let embed =
         {
-            color: blueCol, title: `server info for ${message.guild.name}`, thumbnail: {url: icon},
+            color: global.blueCol, title: `server info for ${message.guild.name}`, thumbnail: {url: icon},
             fields:
             [
                 { name: `region`, value: serverRegion, inline: true},

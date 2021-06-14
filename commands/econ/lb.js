@@ -1,17 +1,7 @@
 const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 
-let g_r = (Math.floor(Math.random() * 50)) + 1;
-let g_g = ((Math.floor(Math.random() * 54)) + 1) + 200;
-let g_b = (Math.floor(Math.random() * 40)) + 40;
-let greenCol = [g_r,g_g,g_b];
-
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errorEmbed = {color: orangeCol, title: 'error', description: '', footer: global.footer};
+let errorEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
 
 module.exports =
 {
@@ -23,8 +13,9 @@ module.exports =
         let title;
         let allMembers = await(message.guild.members.fetch(true));
         let h = Object.entries(UserJSON);
-        var filtered = h.filter(a => a[1].servers.includes(message.guild.id))
-            .filter(a => a[1].games);
+        // var filtered = h.filter(a => a[1].servers.map(s => s.guildId || s).includes(message.guild.id))
+        //     .filter(a => a[1].games);
+        filtered = h.filter(a => (typeof a[1].servers[0] == 'string' && a[1].servers.includes(message.guild.id)) || (typeof a[1].servers[0] == 'object' && a[1].servers.find(b => b.guildId == message.guild.id && b.currentlyInThere)));
         if ( (!args[1]) || (args[1] == `${ConfigJSON.currency}`) )
         {
             title = `total ${ConfigJSON.currency}`;
@@ -76,7 +67,7 @@ module.exports =
         }
         let lbEmbed =
         {
-            color: greenCol, title: `this server's leaderboard for ${title}`,
+            color: global.greenCol, title: `this server's leaderboard for ${title}`,
             description: lbString, footer: global.footer
         };
         return message.channel.send({embed:lbEmbed});

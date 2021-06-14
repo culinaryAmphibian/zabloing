@@ -2,18 +2,8 @@ const search = require('discord.js-search');
 const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require(`../../DB/users.json`);
 
-let g_r = (Math.floor(Math.random() * 50)) + 1;
-let g_g = (Math.floor(Math.random() * 54)) + 201;
-let g_b = (Math.floor(Math.random() * 40)) + 40;
-let greenCol = [g_r,g_g,g_b];
-
-let r_r = (Math.floor(Math.random() * 5) * 30) + 100;
-let r_g = Math.floor(Math.random() * 50) + 20;
-let r_b = Math.floor(Math.random() * 50) + 20;
-let redCol = [r_r,r_g,r_b];
-
-let embed = { color: greenCol, title: ``, footer: global.footer };
-let errorEmbed = { color: redCol, title: `error`, description: '', footer: global.footer };
+let embed = { color: global.greenCol, title: ``, footer: global.footer };
+let errorEmbed = { color: global.redCol, title: `error`, description: '', footer: global.footer };
 
 module.exports =
 {

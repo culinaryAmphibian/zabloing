@@ -4,12 +4,7 @@ const UserJSON = require('../../DB/users.json');
 const cooldown = require('../../DB/config.json').cooldowns.misc.googleImages;
 const secretJSON = require('../../DB/secret.json');
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: '', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
 
 module.exports =
 {

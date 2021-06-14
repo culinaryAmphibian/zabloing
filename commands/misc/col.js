@@ -2,12 +2,7 @@ const config = require('../../DB/config.json');
 const defaults = config.color.defaults;
 const reason = 'official color role stuff business';
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: 'i don\'t have the perms to manage roles', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the perms to manage roles', footer: global.footer};
 
 function template(color, position)
 {

@@ -2,11 +2,6 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const ServerJSON = require('../../DB/servers.json');
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 const helpCommands = new Discord.Collection();
 const helpCommandFiles = fs.readdirSync('./commands/help/').filter(file => file.endsWith('.js') && !file.startsWith('main'));
 for (const helpFile of helpCommandFiles)
@@ -30,7 +25,7 @@ module.exports =
             else return;
         } else
         {
-            let helpEmbd = {color: blueCol, title: `hey there!`, description: 'here is a list of all my command categories.', fields: [], footer: global.footer};
+            let helpEmbd = {color: global.blueCol, title: `hey there!`, description: 'here is a list of all my command categories.', fields: [], footer: global.footer};
             helpCommands.filter(c => c.hide).each(c => helpEmbd.fields.push({name: `${prefix}help ${c.name}`, value: c.description}));
             helpEmbd.fields.push({name: 'individual commands', value: `you can also do ${prefix}help <command name> for a help page of that command.`});
             return message.channel.send({embed:helpEmbd});

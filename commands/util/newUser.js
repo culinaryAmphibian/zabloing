@@ -10,7 +10,7 @@ module.exports =
         UserJSON[user.id] =
         {
             name: [{name: user.tag, timeStamp: new Date().getTime()}],
-            servers: [{guildId: guildId, timeStamp: new Date().getTime()}],
+            servers: [{guildId: guildId, time: new Date().getTime()}],
             ignore: false,
             msgs: 0,
             cooldowns: { hangman: 0, googleImages: 0 },

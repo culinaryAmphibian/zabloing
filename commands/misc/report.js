@@ -4,11 +4,6 @@ const ConfigJSON = require('../../DB/config.json');
 const SecretJSON = require('../../DB/secret.json');
 const UserJSON = require('../../DB/users.json');
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
 function weirdS(num)
 {
     if (num == 1) return;
@@ -26,7 +21,7 @@ function yearsDaysMinutes(msDiff)
 }
 
 const questions = ['what command gave you the issue', 'what happened? it would be helpful if you gave a description and/or a screenshot. thanks!', 'thanks for reporting the issue! i\'ll be on it straight away!'];
-let errEmbed = {color: orangeCol, title: 'error', description: '', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
 let queue = ConfigJSON.reports;
 
 module.exports =
@@ -49,7 +44,7 @@ module.exports =
         collector.on('collect', () => message.channel.send(questions[counter++]));
         collector.on('end', async(collected) =>
         {
-            let embed = {color: orangeCol, title: `problem with the ${collected.first().content} command by ${collected.first().author.id}`,
+            let embed = {color: global.orangeCol, title: `problem with the ${collected.first().content} command by ${collected.first().author.id}`,
             description: `reported by ${collected.first().author.tag}\nin ${collected.first().guild.id} owned by ${collected.first().guild.owner.user.tag}.`,
             fields: [], footer: global.footer};
             counter = 0;

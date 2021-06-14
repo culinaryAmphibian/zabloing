@@ -10,17 +10,12 @@ for(const miscFile of miscCommandFiles)
     miscCommands.set(miscCommand.name, miscCommand);
 }
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 module.exports =
 {
     name: 'misc', description: `a list of misceallaneous commands`, hide: true,
     execute(message, prefix)
     {
-        let miscHelpEmbed = { color: blueCol, title: 'a list of misceallaneous commands', fields: [], footer: global.footer};
+        let miscHelpEmbed = { color: global.blueCol, title: 'a list of misceallaneous commands', fields: [], footer: global.footer};
         miscCommands.filter(c => !c.hide).each(cmd =>
         {
             let cmdName;

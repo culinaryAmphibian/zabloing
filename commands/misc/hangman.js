@@ -9,11 +9,6 @@ const hangmanImg = config["imageLinks"].hangmans;
 
 const reason = 'hangman game';
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 function writeToUsers() {return fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));}
 function writeToDB() {return fs.writeFileSync('./DB/hman.json', JSON.stringify(db, null, 2));}
 
@@ -189,7 +184,7 @@ module.exports =
         let underScores = `\`\`${_underScores.join(" ")}\`\``;
         let mainEmbed =
         {
-            color: blueCol, title: underScores, description: `good luck!`,
+            color: global.blueCol, title: underScores, description: `good luck!`,
             image: { url: hangmanImg[0] },
             fields: [ { name: 'word length', value: wordToGuess.length },
             { name: 'guesses', value: guessCount} ], footer: global.footer

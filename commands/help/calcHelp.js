@@ -1,8 +1,3 @@
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 module.exports =
 {
     name: 'calc', description: 'list of calculator functions', hide: true,
@@ -12,7 +7,7 @@ module.exports =
         {
             let calcHelpEmbed =
             {
-                color: blueCol, title: `a list of calculator commands`, fields: [
+                color: global.blueCol, title: `a list of calculator commands`, fields: [
                     { name: `all the basic operations`, value: `addition (add), subtraction (subtract), multiplication (mult), division (div)`},
                     { name: `slightly more advanced operations`, value: `squareroot (sqrt), factorials (!), exponents (exp)`},
                     { name: `trigonometric functions`, value: `sin, cos, tan, asin, acos, atan`},

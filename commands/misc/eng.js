@@ -4,17 +4,7 @@ var langs = config["langlist"];
 var langsTwo = config["langListtwo"];
 //here
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: 'please specify a query', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'please specify a query', footer: global.footer};
 
 module.exports =
 {
@@ -64,7 +54,7 @@ module.exports =
             if (translated.raw[3]) wordType = `(${translated.raw[3][5][0][0][0]})`;
             let embed =
             {
-                color: blueCol, title: `"${translated.text}" ${inTheLanguage} ${wordType}`,
+                color: global.blueCol, title: `"${translated.text}" ${inTheLanguage} ${wordType}`,
                 fields:
                 [
                     { name: `from`, value: fromLang, inline: true },

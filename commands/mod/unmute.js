@@ -84,18 +84,8 @@ async function resolveToMembers(message, args)
     return {final: final, target: target};
 }
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let g_r = ((Math.floor(Math.random() * 50)) + 1);
-let g_g = (((Math.floor(Math.random() * 54)) + 1)) + 200;
-let g_b = ((Math.floor(Math.random() * 40)) + 40);
-let greenCol = [g_r,g_g,g_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
-let succEmbed = {color: greenCol, title: 'success', description: '', fields: [], footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
+let succEmbed = {color: global.greenCol, title: 'success', description: '', fields: [], footer: global.footer};
 
 module.exports =
 {

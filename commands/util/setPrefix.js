@@ -1,8 +1,6 @@
 const fs = require('fs');
 const ServerJSON = require('../../DB/servers.json');
 
-let greenCol = [(Math.floor(Math.random() * 50)) + 1,(Math.floor(Math.random() * 54)) + 201,(Math.floor(Math.random() * 40)) + 40];
-
 module.exports =
 {
     name: 'setPrefix', hide: true, userUsable: true, description: 'allows you to change the bot\'s prefix in a server.', usage: '<new prefix>setprefix',
@@ -20,7 +18,7 @@ module.exports =
         if (!ServerJSON[message.guild.id].prefixEdits) ServerJSON[message.guild.id].prefixEdits = [];
         ServerJSON[message.guild.id].prefixEdits.push({author: message.author.id, time: new Date().getTime(), changedTo: ServerJSON[message.guild.id].prefix});
         fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
-        let embed = { color: greenCol, title: 'success', description: `my prefix in this server has been changed to "${ServerJSON[message.guild.id].prefix}"`, footer: global.footer };
+        let embed = { color: global.greenCol, title: 'success', description: `my prefix in this server has been changed to "${ServerJSON[message.guild.id].prefix}"`, footer: global.footer };
         return message.channel.send({embed:embed});
     }
 }

@@ -4,16 +4,6 @@ const ConfigJSON = require('../../DB/config.json');
 const SecretJSON = require('../../DB/secret.json');
 const UserJSON = require('../../DB/users.json');
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let g_r = (Math.floor(Math.random() * 50)) + 1;
-let g_g = (Math.floor(Math.random() * 54)) + 201;
-let g_b = (Math.floor(Math.random() * 40)) + 40;
-let greenCol = [g_r,g_g,g_b];
-
 let b = 1;
 
 function weirdS(num)
@@ -34,7 +24,7 @@ function yearsDaysMinutes(msDiff)
 
 function suggestAndRespond(content, author, channel, embed, ch)
 {
-    embed.color = orangeCol;
+    embed.color = global.orangeCol;
     embed.title = 'error';
     embed.description = 'your suggestion message didn\'t have any words!';
     if (!content)
@@ -49,7 +39,7 @@ function suggestAndRespond(content, author, channel, embed, ch)
         b = 0;
         return channel.send({embed:embed});
     }
-    embed.color = greenCol;
+    embed.color = global.greenCol;
     embed.title = `suggestion #${ConfigJSON.suggestions.count + 1} from ${author.username}`;
     embed.description = `"${content}"`;
     ch.send({embed:embed});
@@ -59,8 +49,8 @@ function suggestAndRespond(content, author, channel, embed, ch)
 }
 
 const questions = ['what would you like to suggest?', 'thanks for your suggestion!'];
-let errEmbed = {color: orangeCol, title: 'error', description: '', footer: global.footer};
-let suggestEmbed = {color: greenCol, title: '', description: '', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
+let suggestEmbed = {color: global.greenCol, title: '', description: '', footer: global.footer};
 
 module.exports =
 {

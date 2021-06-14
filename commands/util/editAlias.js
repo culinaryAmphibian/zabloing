@@ -3,18 +3,8 @@ const fs = require('fs');
 const SecretJSON = require('../../DB/secret.json').badWords;
 const ServerJSON = require('../../DB/servers.json');
 
-let b_r = Math.floor(Math.random() * 50);
-let b_g = Math.floor(Math.random() * 100) + 50;
-let b_b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [b_r,b_g,b_b];
-
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: 'this server doesn\'t have any aliases.', footer: global.footer};
-let succEmbed = {color: blueCol, title: 'success', description: 'the ', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'this server doesn\'t have any aliases.', footer: global.footer};
+let succEmbed = {color: global.blueCol, title: 'success', description: 'the ', footer: global.footer};
 
 const questions = ['what alias do you want to modify?', 'do you want to modify the alias name or command, or delete the alias?', 'what do you want to change it to?'];
 

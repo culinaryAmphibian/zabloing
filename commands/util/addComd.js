@@ -4,12 +4,7 @@ const ConfigJSON = require('../../DB/config.json').imageLinks;
 const serverJSON = require('../../DB/servers.json');
 const SecretJSON = require('../../DB/secret.json');
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
-let errEmbed = {color: orangeCol, title: 'error', description: 'you don\'t have the permission to manage messages.', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'you don\'t have the permission to manage messages.', footer: global.footer};
 const questions = ['what should it be called?', 'what should it send back?'];
 
 module.exports =
@@ -67,7 +62,7 @@ module.exports =
             if (!serverJSON[message.guild.id].cmds) serverJSON[message.guild.id].cmds = [];
             serverJSON[message.guild.id].cmds.push({name: name, response: response, author: message.author.id, time: new Date().getTime()});
             fs.writeFileSync('./DB/servers.json', JSON.stringify(serverJSON, null, 2));
-            let embed = {color: greenCol, title: 'success', description: `${name} command has been added`, footer: global.footer};
+            let embed = {color: global.greenCol, title: 'success', description: `${name} command has been added`, footer: global.footer};
             return message.channel.send({embed:embed});
         })
     }

@@ -3,18 +3,8 @@ const fs = require('fs');
 const ConfigJSON = require('../../DB/config.json');
 const ServerJSON = require('../../DB/servers.json');
 
-let g_r = Math.floor(Math.random() * 50) + 1;
-let g_g = Math.floor(Math.random() * 54) + 201;
-let g_b = Math.floor(Math.random() * 40) + 40;
-let greenCol = [g_r,g_g,g_b];
-
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
 const questions = ['what is the name of the alias?', 'what command is it for?'];
-let errEmbed = {color: orangeCol, title: 'error', description: 'you need to have the permissions to manage messages to create aliases.', footer: global.footer};
+let errEmbed = {color: global.orangeCol, title: 'error', description: 'you need to have the permissions to manage messages to create aliases.', footer: global.footer};
 
 module.exports =
 {
@@ -66,7 +56,7 @@ module.exports =
             if (!ServerJSON[message.guild.id].cmds) ServerJSON[message.guild.id].cmds = [];
             ServerJSON[message.guild.id].cmds.push({name: aliasName, response: `[pref]${cmdName}`, type: 'alias', author: message.author.id, time: new Date().getTime()});
             fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
-            errEmbed.color = greenCol;
+            errEmbed.color = global.greenCol;
             errEmbed.title = 'success';
             errEmbed.description = `the alias ${aliasName} has successfully beeen created for the ${cmdName} command.`;
             return message.channel.send({embed:errEmbed});

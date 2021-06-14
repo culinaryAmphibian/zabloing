@@ -4,19 +4,9 @@ const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 const ServerJSON = require('../../DB/servers.json');
 
-let g_r = ((Math.floor(Math.random() * 50)) + 1);
-let g_g = (((Math.floor(Math.random() * 54)) + 1)) + 200;
-let g_b = ((Math.floor(Math.random() * 40)) + 40);
-greenCol = [g_r,g_g,g_b];
+let successEmbed = { color: global.greenCol, title: 'success!', description: '', footer: global.footer };
 
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + Math.floor(Math.random() * 40) + 1;
-let o_b = Math.floor(Math.random() * 35) + 1;
-let orangeCol = [o_r,o_g,o_b];
-
-let successEmbed = { color: greenCol, title: 'success!', description: '', footer: global.footer };
-
-let errorEmbed = { color: orangeCol, title: 'error', description: '', footer: global.footer };
+let errorEmbed = { color: global.orangeCol, title: 'error', description: '', footer: global.footer };
 
 module.exports =
 {

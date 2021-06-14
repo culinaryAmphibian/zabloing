@@ -2,16 +2,6 @@ const fs = require('fs');
 const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 
-let g_r = Math.floor(Math.random() * 50) + 1;
-let g_g = Math.floor(Math.random() * 54) + 201;
-let g_b = Math.floor(Math.random() * 40) + 40;
-let greenCol = [g_r,g_g,g_b];
-
-let o_r = (Math.floor(Math.random() * 25) + 1) + 230;
-let o_g = 100 + (Math.floor(Math.random() * 40) + 1);
-let o_b = (Math.floor(Math.random() * 35) + 1)
-let orangeCol = [o_r,o_g,o_b];
-
 function weirdS(num)
 {
     if (num == 1) return '';
@@ -28,8 +18,8 @@ function yearsDaysMinutes(msDiff)
     else return `${seconds} second${weirdS(seconds)} (${msDiff} milliseconds)`;
 }
 
-let succEmbed = { color: greenCol, title: `success`, description: ``, footer: global.footer };
-let errEmbed = { color: orangeCol, title: `error`, description: ``, footer: global.footer };
+let succEmbed = { color: global.greenCol, title: `success`, description: ``, footer: global.footer };
+let errEmbed = { color: global.orangeCol, title: `error`, description: ``, footer: global.footer };
 const dailyAward = 50;
 
 module.exports =

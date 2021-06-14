@@ -11,17 +11,12 @@ for(const imgFile of imgCommandFiles)
     imgCommands.set(imgCommand.name, imgCommand);
 }
 
-let r = Math.floor(Math.random() * 50);
-let g = Math.floor(Math.random() * 100) + 50;
-let b = (Math.floor(Math.random() * 25) + 1) + 230;
-let blueCol = [r,g,b];
-
 module.exports =
 {
     name: 'img', description: 'a list of image commands', hide: true,
     execute(message)
     {
-        let emded = {color: blueCol, title: 'a list of image commands', fields: [], footer: global.footer};
+        let emded = {color: global.blueCol, title: 'a list of image commands', fields: [], footer: global.footer};
         emded.fields.push({ name: `just images`, value: Object.keys(config.imageLinks.images).filter(a => !config.imageLinks.images[a].endsWith('gif')).join(', ')});
         emded.fields.push({name: 'gifs/videos', value: Object.keys(config.imageLinks.images).filter(a => config.imageLinks.images[a].endsWith('gif')).concat(Object.keys(config.imageLinks.videos)).join(', ')});
         emded.fields.push({name: 'special commands', value: imgCommands.filter(c => !c.hide).map(c => c.name[0]).join(', ')});

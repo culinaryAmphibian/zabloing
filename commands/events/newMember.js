@@ -102,11 +102,14 @@ module.exports =
     name: 'guildMemberAdd', description: 'what to do when a new member joins', hide: true,
     async execute(bot, member)
     {
-        if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
-        if (!UserJSON[member.user.id].servers.map(s => s?.guildId).includes(member.guild.id)) UserJSON[member.user.id].servers.push({guildId: member.guild.id, time: new Date().getTime(), joins: 0});
-        UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).currentlyInThere = true;
-        UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).joins++;
-        fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+        if (!member.user.bot)
+        {
+            if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
+            if (!UserJSON[member.user.id].servers.map(s => s?.guildId).includes(member.guild.id)) UserJSON[member.user.id].servers.push({guildId: member.guild.id, time: new Date().getTime(), joins: 0});
+            UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).currentlyInThere = true;
+            UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id).joins++;
+            fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+        }
         embed.title += `${member.user.tag}!`;
         embed.description = `${member} (${member.id}) is the ${ordinal(member.guild.memberCount)} member of this server.`;
         embed.fields.push({name: 'account created:', value: `${yearsDaysMinutes(new Date().getTime() - member.user.createdTimestamp)}`});

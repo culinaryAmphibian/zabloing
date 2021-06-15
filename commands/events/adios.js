@@ -84,7 +84,7 @@ module.exports =
         else server.log.push({type: 'leave', time: new Date().getTime()});
         server.currentlyInThere = false;
         fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
-        embed.color = member.displayHexColor;
+        embed.color = member.displayHexColor || global.blueCol;
         embed.title = nick(member);
         embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096});
         embed.description = `bye, ${member} 😢`;

@@ -112,7 +112,7 @@ function when(ms)
     return arr.pop() + ' ago';
 }
 
-let embed = {color: global.blueCol, title: 'welcome, ', description: '', image: {url: ''}, fields: []};
+let embed = {color: global.blueCol, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
 
 module.exports =
 {
@@ -128,6 +128,7 @@ module.exports =
             fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
         }
         embed.title += `${member.user.tag}!`;
+        embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096})
         embed.description = `${member} is the ${ordinal(member.guild.memberCount)} member of this server.`;
         embed.fields.push( {name: 'id', value: member.id}, {name: 'account created:', value: `${when(new Date().getTime() - member.user.createdTimestamp)}`});
         const canvas = Canvas.createCanvas(1050, 450);

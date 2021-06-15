@@ -66,27 +66,44 @@ const activityType =
     COMPETING: 'competing'
 };
 
+const yr = 1000 * 60 * 60 * 24 * 365;
+const mo = yr/12;
+const wk = 1000 * 60 * 60 * 24 * 7;
+const dy = wk/7;
+const hr = dy/24;
+const min = hr/60;
+const sec = min/60;
+const msec = sec/1000;
+
 function weirdS(num)
 {
-    if (num == 1) return '';
-    else return 's';
+    if (num != 1) return 's';
+    return '';
 }
 
-function yearsDaysMinutes(msDiff)
+function when(ms)
 {
-    let seconds = Math.round(msDiff/1000);
-    let minutes = Math.floor(seconds/60);
-    let hours = Math.floor(minutes/60);
-    let days = Math.floor(hours/24);
-    let years = Math.floor(days/365);
-    if (years > 0)
-    {
-        if ((days % 365) == 0) return `exactly ${years} (${days}) ago, happy birthday!`;
-        return `${years} year${weirdS(years)} (${days} days) ago`;
-    } else if (days > 0) return `${days} day${weirdS(days)} (${hours} hours) ago`;
-    else if (hours > 0) return `${hours} hour${weirdS(hours)} (${minutes} minutes) ago`;
-    else if (minutes > 0) return `${minutes} minute${weirdS(minutes)} (${seconds} seconds) ago`;
-    else return `${seconds} second${weirdS(seconds)} (${msDiff} milliseconds) ago`;
+    let arr = [];
+    let years = Math.floor(ms/yr);
+    if (years >= 1) arr.push(`${years} year${weirdS(years)}`);
+    let months = Math.floor((ms - (years * yr))/mo);
+    if (months >= 1) arr.push(`${months} month${weirdS(months)}`);
+    let weeks = Math.floor((ms - ((years * yr) + (months * mo)))/wk);
+    if (weeks >= 1) arr.push(`${weeks} week${weirdS(weeks)}`);
+    let days = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk)))/dy);
+    if (days >= 1) arr.push(`${days} day${weirdS(days)}`);
+    let hours = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy)))/hr);
+    if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
+    let minutes = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr)))/min);
+    if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
+    let seconds = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr) + (minutes * min)))/sec);
+    if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
+    let milliseconds = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr) + (minutes * min) + (seconds * sec)))/msec);
+    if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
+
+    if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()} ago`;
+    if (arr.length > 1) return `${arr.slice(0, -1).join(', ')} and ${arr.pop()} ago`;
+    return arr.pop() + ' ago';
 }
 
 module.exports =
@@ -112,11 +129,11 @@ module.exports =
        let nick = '';
        if (asGuildMember.displayName != target.username) nick = `(${asGuildMember.displayName})`;
 
-       let creatednDaysAgo = yearsDaysMinutes( new Date().getTime() - target.createdTimestamp );
+       let creatednDaysAgo = when( new Date().getTime() - target.createdTimestamp );
        let created = `${dateFormat(target.createdAt, 'default', true)} UTC`;
        finalCreatedDateThingText = `${creatednDaysAgo}\n${created}`;
 
-       let joinednDaysAgo = yearsDaysMinutes( new Date().getTime() - asGuildMember.joinedTimestamp );
+       let joinednDaysAgo = when( new Date().getTime() - asGuildMember.joinedTimestamp );
        let joined = `${dateFormat(asGuildMember.joinedAt, 'default', true)} UTC`;
        finalJoiendDateThingText = `${joinednDaysAgo}\n${joined}`;
 
@@ -130,9 +147,9 @@ module.exports =
 
        let presence = `${pres[target.presence.status]}`;
        let presenceAgo = '';
-       if (target.presence.activities[0]) presenceAgo = `, set ${yearsDaysMinutes( new Date().getTime() - target.presence.activities[0].createdTimestamp)}`;
+       if (target.presence.activities[0]) presenceAgo = `, set ${when( new Date().getTime() - target.presence.activities[0].createdTimestamp)}`;
 
-       let boostUsedAgo = yearsDaysMinutes( new Date().getTime() - asGuildMember.premiumSinceTimestamp);
+       let boostUsedAgo = when( new Date().getTime() - asGuildMember.premiumSinceTimestamp);
 
        let highest = `${asGuildMember.roles.highest}, ${asGuildMember.roles.highest.position} from the bottom\nand ${message.guild.roles.cache.size - asGuildMember.roles.highest.position} from the top`;
        let more = asGuildMember.roles.cache.size;
@@ -145,7 +162,7 @@ module.exports =
                     {name: 'can i kick them? can i ban them? can i manage them otherwise?', 
                     value: `${bth[asGuildMember.bannable]}, ${bth[asGuildMember.kickable]}, and ${bth[asGuildMember.manageable]}`}]
        };
-       if (lastMessage != undefined) embed.fields.push({ name: 'last message', value: `"${lastMessage.content}", sent ${yearsDaysMinutes(new Date().getTime() - lastMessage.createdTimestamp)} in ${lastMessage.channel}`});
+       if (lastMessage != undefined) embed.fields.push({ name: 'last message', value: `"${lastMessage.content}", sent ${when(new Date().getTime() - lastMessage.createdTimestamp)} in ${lastMessage.channel}`});
        if (asGuildMember.roles.cache.size > 0) embed.fields.push({ name: 'highest role', value: `${highest}${more}`});
        if (asGuildMember.premiumSinceTimestamp !== 0) embed.fields.push({name: 'boosting this server since', 
             value: `${boostUsedAgo}\n${dateFormat(asGuildMember.premiumSince, 'default', true)} UTC`});
@@ -153,7 +170,7 @@ module.exports =
        {
            embed.fields.push({name: 'presence', value: `${presence}${presenceAgo}`});
            (target.presence.activities.filter(a => a.type !== 'CUSTOM_STATUS')
-           .forEach(activity => embed.fields[embed.fields.length - 1].value += `\n${activityType[activity.type]} ${activity.name}, set ${yearsDaysMinutes(new Date().getTime() - activity.createdTimestamp)}`));
+           .forEach(activity => embed.fields[embed.fields.length - 1].value += `\n${activityType[activity.type]} ${activity.name}, set ${when(new Date().getTime() - activity.createdTimestamp)}`));
        }
        let flagsVal;
        if (target.flags.toArray().length > 0)

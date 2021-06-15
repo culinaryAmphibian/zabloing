@@ -72,27 +72,44 @@ function ordinal(num)
     return ord;
 }
 
+const yr = 1000 * 60 * 60 * 24 * 365;
+const mo = yr/12;
+const wk = 1000 * 60 * 60 * 24 * 7;
+const dy = wk/7;
+const hr = dy/24;
+const min = hr/60;
+const sec = min/60;
+const msec = sec/1000;
+
 function weirdS(num)
 {
-    if (num == 1) return '';
-    else return 's';
+    if (num != 1) return 's';
+    return '';
 }
 
-function yearsDaysMinutes(msDiff)
+function when(ms)
 {
-    let seconds = Math.round(msDiff/1000);
-    let minutes = Math.floor(seconds/60);
-    let hours = Math.floor(minutes/60);
-    let days = Math.floor(hours/24);
-    let years = Math.floor(days/365);
-    if (years > 0)
-    {
-        if ((days % 365) == 0) return `exactly ${years} (${days}) ago, happy birthday!`;
-        return `${years} year${weirdS(years)} (${days} days) ago`;
-    } else if (days > 0) return `${days} day${weirdS(days)} (${hours} hours) ago`;
-    else if (hours > 0) return `${hours} hour${weirdS(hours)} (${minutes} minutes) ago`;
-    else if (minutes > 0) return `${minutes} minute${weirdS(minutes)} (${seconds} seconds) ago`;
-    else return `${seconds} second${weirdS(seconds)} (${msDiff} milliseconds) ago`;
+    let arr = [];
+    let years = Math.floor(ms/yr);
+    if (years >= 1) arr.push(`${years} year${weirdS(years)}`);
+    let months = Math.floor((ms - (years * yr))/mo);
+    if (months >= 1) arr.push(`${months} month${weirdS(months)}`);
+    let weeks = Math.floor((ms - ((years * yr) + (months * mo)))/wk);
+    if (weeks >= 1) arr.push(`${weeks} week${weirdS(weeks)}`);
+    let days = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk)))/dy);
+    if (days >= 1) arr.push(`${days} day${weirdS(days)}`);
+    let hours = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy)))/hr);
+    if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
+    let minutes = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr)))/min);
+    if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
+    let seconds = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr) + (minutes * min)))/sec);
+    if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
+    let milliseconds = Math.floor((ms - ((years * yr) + (months * mo) + (weeks * wk) + (days * dy) + (hours * hr) + (minutes * min) + (seconds * sec)))/msec);
+    if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
+
+    if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()} ago`;
+    if (arr.length > 1) return `${arr.slice(0, -1).join(', ')} and ${arr.pop()} ago`;
+    return arr.pop() + ' ago';
 }
 
 let embed = {color: global.blueCol, title: 'welcome, ', description: '', image: {url: ''}, fields: []};
@@ -111,8 +128,8 @@ module.exports =
             fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
         }
         embed.title += `${member.user.tag}!`;
-        embed.description = `${member} (${member.id}) is the ${ordinal(member.guild.memberCount)} member of this server.`;
-        embed.fields.push({name: 'account created:', value: `${yearsDaysMinutes(new Date().getTime() - member.user.createdTimestamp)}`});
+        embed.description = `${member} is the ${ordinal(member.guild.memberCount)} member of this server.`;
+        embed.fields.push( {name: 'id', value: member.id}, {name: 'account created:', value: `${when(new Date().getTime() - member.user.createdTimestamp)}`});
         const canvas = Canvas.createCanvas(1050, 450);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = 'rgb(116, 117, 116)';

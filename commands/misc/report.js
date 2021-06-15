@@ -4,20 +4,36 @@ const ConfigJSON = require('../../DB/config.json');
 const SecretJSON = require('../../DB/secret.json');
 const UserJSON = require('../../DB/users.json');
 
+const yr = 1000 * 60 * 60 * 24 * 365;
+const mo = yr/12;
+const wk = 1000 * 60 * 60 * 24 * 7;
+const dy = wk/7;
+const hr = dy/24;
+const min = hr/60;
+const sec = min/60;
+const msec = sec/1000;
+
 function weirdS(num)
 {
-    if (num == 1) return;
-    else return 's';
+    if (num != 1) return 's';
+    return '';
 }
 
-function yearsDaysMinutes(msDiff)
+function when(ms)
 {
-    let seconds = Math.round(msDiff/1000);
-    let minutes = Math.floor(seconds/60);
-    let hours = Math.floor(minutes/60);
-    if (hours > 0) return `${hours} hour${weirdS(hours)} (${minutes} minutes)`;
-    else if (minutes > 0) return `${minutes} minute${weirdS(minutes)} (${seconds} seconds)`;
-    else return `${seconds} second${weirdS(seconds)} (${msDiff} milliseconds)`;
+    let arr = [];
+    let hours = Math.floor(ms/hr);
+    if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
+    let minutes = Math.floor((ms - (hours * hr))/min);
+    if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
+    let seconds = Math.floor((ms - ((hours * hr) + (minutes * min)))/sec);
+    if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
+    let milliseconds = Math.floor((ms - ((hours * hr) + (minutes * min) + (seconds * sec)))/msec);
+    if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
+
+    if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()}`;
+    if (arr.length > 1) return `${arr.slice(0, -1).join(', ')} and ${arr.pop()}`;
+    return arr.pop();
 }
 
 const questions = ['what command gave you the issue', 'what happened? it would be helpful if you gave a description and/or a screenshot. thanks!', 'thanks for reporting the issue! i\'ll be on it straight away!'];
@@ -32,7 +48,7 @@ module.exports =
     {
         if (!UserJSON[message.author.id].lastReport) UserJSON[message.author.id].lastReport = new Date().getTime() - (1000 * 60 * 60);
         if (!UserJSON[message.author.id].reportCount) UserJSON[message.author.id].reportCount = 0;
-        errEmbed.description = `you have already reported in the last hour.\nyou can report again in ${yearsDaysMinutes(UserJSON[message.author.id].lastReport + (1000 * 60 * 60) - new Date().getTime())}`;
+        errEmbed.description = `you have already reported in the last hour.\nyou can report again in ${when(UserJSON[message.author.id].lastReport + (1000 * 60 * 60) - new Date().getTime())}`;
         if ((new Date().getTime()) - UserJSON[message.author.id].lastReport < (1000 * 60 * 60)) return message.channel.send({embed:errEmbed});
         UserJSON[message.author.id].lastReport = new Date().getTime();
         UserJSON[message.author.id].reportCount++;

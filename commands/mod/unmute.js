@@ -1,16 +1,10 @@
 const compare = require('str-compare');
 
-function greatest(value1, value2)
-{
-    if (value1 > value2) return value1;
-    return value2;
-}
-
 function member(query, allMembers)
 {
     query = query.trim();
     allMembers.each(m => m.rating = compare.jaro(query, m.user.username));
-    allMembers.filter(m => m.nickname).each(m => m.rating = greatest(m.rating, compare.jaro(query, m.nickname)));
+    allMembers.filter(m => m.nickname).each(m => m.rating = Math.max(m.rating, compare.jaro(query, m.nickname)));
     allMembers.sort((a, b) => b.rating - a.rating);
     if (allMembers.first().rating > 0.7) return allMembers.first();
 }
@@ -41,12 +35,10 @@ async function resolveToMembers(message, args)
     if (idM) idM.forEach(m => target.members.push(allMembers.get(m)));
     args = args.filter(a => !allMembers.get(a));
 
-    args = args.filter(a => !a.match(/\d{17,19}/g));
-
-    let tags = args.filter(a => a.match(/\w{1,32}#\d{4}/g)).filter(allMembers.map(m => m.user.tag).includes(a));
+    let tags = args.filter(a => a.match(/\w{1,32}#\d{4}/g)).filter(a => allMembers.map(m => m.user.tag).includes(a));
     tags.forEach(tag => target.members.push(allMembers.find(m => m.user.tag == tag)));
 
-    args = args.filter(a => !a.match(/\w{2,32}#\d{4}/g));
+    args = args.filter(a => !a.match(/\w{2,32}#\d{4}/g) && !allMembers.find(m => m.user.tag == a));
 
     let rNames = args.filter(a => a.startsWith('r:'));
     if (rNames)
@@ -70,18 +62,35 @@ async function resolveToMembers(message, args)
     }
 
     let final = [];
-    target.members.forEach(m => final.push(m));
     target.roles.forEach(r => r.members.each(m => final.push(m)));
     target.channels.forEach(ch => allMembers.filter(m => m.permissionsIn(ch).toArray().includes('SEND_MESSAGES').forEach(m => final.push(m))));
 
-    if (message.content.includes('|')) message.content = message.content.split('|')[0];
-    let uArgs = message.content.split(';');
+    let uArgs = args;
+    if (message.content.includes(';')) uArgs = args.join(' ').split(';');
     uArgs.forEach(a =>
     {
         let mem = member(a, allMembers);
-        if (mem) final.push(mem);
+        if (mem)
+        {
+            args.splice(args.indexOf(`${a}`), 1);
+            target.members.push(mem);
+        }
     });
+    target.members.forEach(m => final.push(m));
+
     return {final: final, target: target};
+}
+
+function weirdS(num)
+{
+    if (num != 1) return 's';
+    return '';
+}
+
+function weirderS(num)
+{
+    if (num != 1) return 'have';
+    return 'has';
 }
 
 let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
@@ -100,16 +109,17 @@ module.exports =
         errEmbed.description = 'please specify a user to mute.';
         if (!args[1]) return message.channel.send({embed:errEmbed});
         let all = await resolveToMembers(message, args);
-        let target = all.final;
+        let final = all.final;
+        let target = all.target;
         errEmbed.description = `i couldn't find those users.`;
-        if (!target) return message.channel.send({embed: errEmbed});
+        if (!final) return message.channel.send({embed: errEmbed});
         let roleToRemove = message.guild.roles.cache.find(r => r.name.toLowerCase() == 'muted' && !r.permissions.toArray().includes('SEND_MESSAGES'));
         errEmbed.description = 'there is no muted role in this server!';
         if (!roleToRemove) return message.channel.send({embed: errEmbed});
         let reason = message.content.slice(1).shift() || 'no reason provided';
-        if (reason) target.filter(m => m.roles.cache.has(roleToRemove.id)).forEach(m => m.roles.remove(roleToRemove, reason));
-        succEmbed.description = `${target.length} members have been unmuted.`;
-        Object.keys(all.target).forEach(t => succEmbed.fields.push({name: t, value: all.target[t].join(', ')}));
+        final.filter(m => m.roles.cache.has(roleToRemove.id)).forEach(m => m.roles.remove(roleToRemove, reason));
+        succEmbed.description = `${final.length} member${weirdS(final.length)} ${weirderS(final.length)} been unmuted.`;
+        Object.keys(target).filter(t => t[0]).forEach(t => succEmbed.fields.push({name: t, value: all.target[t].join(', ')}));
         return message.channel.send({embed: succEmbed});
     }
 }

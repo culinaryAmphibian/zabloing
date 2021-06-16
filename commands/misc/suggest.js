@@ -6,8 +6,6 @@ const UserJSON = require('../../DB/users.json');
 
 let b = 1;
 
-const yr = 1000 * 60 * 60 * 24 * 365;
-const mo = yr/12;
 const wk = 1000 * 60 * 60 * 24 * 7;
 const dy = wk/7;
 const hr = dy/24;
@@ -26,9 +24,11 @@ function when(ms)
     let arr = [];
     let minutes = Math.floor(ms/min);
     if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
-    let seconds = Math.floor((ms - (minutes * min))/sec);
+    ms -= minutes * min;
+    let seconds = Math.floor(ms/sec);
     if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
-    let milliseconds = Math.floor((ms - ((minutes * min) + (seconds * sec)))/msec);
+    ms -= seconds * sec;
+    let milliseconds = Math.floor(ms/msec);
     if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
 
     if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()}`;

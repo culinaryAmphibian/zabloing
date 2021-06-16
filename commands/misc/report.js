@@ -24,11 +24,14 @@ function when(ms)
     let arr = [];
     let hours = Math.floor(ms/hr);
     if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
-    let minutes = Math.floor((ms - (hours * hr))/min);
+    ms -= hours * hr;
+    let minutes = Math.floor(ms/min);
     if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
-    let seconds = Math.floor((ms - ((hours * hr) + (minutes * min)))/sec);
+    ms -= minutes * min;
+    let seconds = Math.floor(ms/sec);
     if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
-    let milliseconds = Math.floor((ms - ((hours * hr) + (minutes * min) + (seconds * sec)))/msec);
+    ms -= seconds * sec;
+    let milliseconds = Math.floor(ms/msec);
     if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
 
     if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()}`;

@@ -16,8 +16,8 @@ module.exports =
         else id.msgs++;
         if (!id?.servers.map(s => s.guildId || s).includes(message.guild.id)) id.servers.push({guildId: message.guild.id, time: new Date().getTime(), actualJoin: false});
         fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
-        if (ServerJSON[message.guild.id].log?.filter?.(a => a.type == 'namechange').pop().newName !== message.guild.name)
-        ServerJSON[message.guild.id].log?.push?.({type: 'namechange', time: new Date().getTime(), newName: message.guild.name});
+        if (ServerJSON[message.guild.id].name?.pop?.()?.name !== message.guild.name)
+        ServerJSON[message.guild.id].name.push?.({name: message.guild.name, time: new Date().getTime()});
         return fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
     }
 }

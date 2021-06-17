@@ -73,9 +73,8 @@ module.exports =
     execute(guildId)
     {
 		let lastCol = ServerJSON[guildId].lastEmbedHue;
-		if ((!'lastEmbedHue' in ServerJSON[guildId]) || (lastCol > 360)) lastCol = -35;
-		lastCol += 35;
-		console.log(lastCol);
+		if ((!'lastEmbedHue' in ServerJSON[guildId]) || (lastCol > 359)) lastCol = -30;
+		lastCol += 30;
 		ServerJSON[guildId].lastEmbedHue = lastCol;
 		fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
         return hsl2rgb(lastCol).hex;

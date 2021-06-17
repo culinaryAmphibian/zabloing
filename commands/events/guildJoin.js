@@ -8,7 +8,8 @@ module.exports =
     name: 'guildCreate', hide: true,
     async execute(bot, guild)
     {
-        let channel = guild.channels.cache.find(c => c.name.includes('general')) || guild.channels.cache.random();
+        let channelCache = guild.channels.cache.filter(ch => ch.type == 'text');
+        let channel = channelCache.find(c => c.name.includes('general')) || channelCache.random();
         if (!channel) return;
         embed.footer.text = guild.name;
         embed.footer.icon_url = guild.iconURL({dynamic: true}) || bot.user.displayAvatarURL({dynamic: true});

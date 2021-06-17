@@ -102,7 +102,7 @@ module.exports =
         embed.footer = {text: 'alexa, play despacito', icon_url: member.guild.iconURL({dynamic: true})};
         let lastMsg = member.lastMessage;
         if (lastMsg?.content) embed.fields.push({name: 'last message', value: `"${lastMsg.content}", sent at ${dateFormat(lastMsg.createdAt, dateMask, true)} UTC in ${lastMsg.channel}`});
-        let channelCache = member.guild.channels.cache;
+        let channelCache = member.guild.channels.cache.filter(ch => ch.type == 'text');
         let channel = ServerJSON[member.guild.id].leaveChannel || ServerJSON[member.guild.id].welcomeChannel || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
         if (!channel) return;
 

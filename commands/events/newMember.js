@@ -159,7 +159,7 @@ module.exports =
         ctx.clip();
         const av = await Canvas.loadImage(member.user.displayAvatarURL({format:'png', size: 256}));
         ctx.drawImage(av, canvas.width/6 - 128, canvas.height/2 - 128, 256, 256);
-        const channels = member.guild.channels.cache;
+        const channels = member.guild.channels.cache.filter(ch => ch.type == 'text');
         const channel = channels.get(ServerJSON[member.guild.id]?.welcomeChannel) || channels.find(c => c.name.includes('welcome') || c.name.includes('wlc') || c.name.includes('general')) || channels.random();
         if (!member.user.bot)
         {

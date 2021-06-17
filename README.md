@@ -66,10 +66,12 @@ an all-in-one discord bot
 
 ## todo
 ### responses to more client events
-* welcome
-* leave
-* kick
-* ban
+
+* guildBanAdd(guild, user)
+* guildMemberUpdate(oldMember, newMember)
+* guildUpdate(oldGuild, newGuild)
+* messageDeleteBulk(messages)
+* messageUpdate(oldMessage, newMessage)
 * etc.
 ### invite manager
 * intended for server privacy/security

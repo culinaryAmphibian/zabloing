@@ -20,7 +20,7 @@ module.exports =
         emded.fields.push({ name: `just images`, value: Object.keys(config.imageLinks.images).filter(a => !config.imageLinks.images[a].endsWith('gif')).join(', ')});
         emded.fields.push({name: 'gifs/videos', value: Object.keys(config.imageLinks.images).filter(a => config.imageLinks.images[a].endsWith('gif')).concat(Object.keys(config.imageLinks.videos)).join(', ')});
         emded.fields.push({name: 'special commands', value: imgCommands.filter(c => !c.hide).map(c => c.name[0]).join(', ')});
-        if (ServerJSON[message.guild.id].cmds.find(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi)))
+        if (ServerJSON[message.guild.id]?.cmds?.find(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi)))
         {
             let x = [];
             ServerJSON[message.guild.id].cmds.filter(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi))

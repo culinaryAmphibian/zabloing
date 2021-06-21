@@ -82,6 +82,7 @@ module.exports =
     {
         if (member.user.bot) return;
         // there should be a thing that checks if user has been kicked/banned using db
+        if (UserJSON[member.user.id].servers.find(s => s?.guildId == member.guild.id).banned) return;
         if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
         if (!UserJSON[member.user.id].servers.map(s => s.guildId).includes(member.guild.id))
         await bot.commandsForInternalProcesses.get('newServer').execute(member.guild);

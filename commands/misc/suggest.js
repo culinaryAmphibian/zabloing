@@ -47,7 +47,6 @@ function suggestAndRespond(content, author, channel, embed, ch)
         return message.channel.send({embed:embed});
     }
     embed.description = 'your suggestion has a bad word!';
-    console.log(SecretJSON.badWords.filter(bw => content.split(" ").includes(bw)));
     if (SecretJSON.badWords.find(bw => content.toLowerCase().split(" ").includes(bw)))
     {
         b = 0;

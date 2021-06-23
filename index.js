@@ -3,6 +3,7 @@ const bot = new Discord.Client();
 const ConfigJSON = require('./DB/config.json');
 const ServerJSON = require('./DB/servers.json');
 require('./commands/util/embColors').execute(global);
+bot.on('guildBanAdd', (guild, user) => bot.commandsForInternalProcesses.get('guildBanAdd').execute(bot, guild, user));
 bot.on('guildCreate', guild => bot.commandsForInternalProcesses.get('guildCreate').execute(bot, guild));
 bot.on('guildMemberAdd', member => bot.commandsForInternalProcesses.get('guildMemberAdd').execute(bot, member));
 bot.on('guildMemberRemove', member => bot.commandsForInternalProcesses.get('guildMemberRemove').execute(bot, member));

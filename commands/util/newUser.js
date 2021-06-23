@@ -6,7 +6,7 @@ module.exports =
     name: 'newUser', description: 'what to write to the database when new user', hide: true,
     execute(user, guildId)
     {
-        if (UserJSON[user.id]) return;
+        if (UserJSON[user.id] || user.bot) return;
         UserJSON[user.id] =
         {
             name: [{name: user.tag, timeStamp: new Date().getTime()}],

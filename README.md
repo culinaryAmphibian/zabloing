@@ -49,8 +49,6 @@ js | yes
 ## todo
 ###  fix: prevent self mutes
 ### responses to more client events
-
-* guildBanAdd(guild, user)
 * guildMemberUpdate(oldMember, newMember)
 * guildUpdate(oldGuild, newGuild)
 * messageDeleteBulk(messages)

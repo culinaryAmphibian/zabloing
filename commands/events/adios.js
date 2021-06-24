@@ -69,8 +69,6 @@ function when(ms)
     return arr.pop();
 }
 
-let embed = {color: global.blueCol, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
-
 let acceptableChannelNames = ['leave', 'bye', 'welcome', 'wlc', 'general']
 
 let dateMask = 'dddd, mmmm d yyyy h:M:s tt';
@@ -80,32 +78,72 @@ module.exports =
     name: 'guildMemberRemove', description: 'what to do when a member leaves', hide: true,
     async execute(bot, member)
     {
-        if (member.user.bot) return;
-        // there should be a thing that checks if user has been kicked/banned using db
-        if (UserJSON[member.user.id].servers.find(s => s?.guildId == member.guild.id).banned) return;
-        if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
-        if (!UserJSON[member.user.id].servers.map(s => s.guildId).includes(member.guild.id))
-        await bot.commandsForInternalProcesses.get('newServer').execute(member.guild);
-        let server = UserJSON[member.user.id].servers.find(s => s.guildId == member.guild.id);
-        if (!server) UserJSON[member.user.id].servers.push({guildId: member.guild.id, time: new Date().getTime(), joins: 0, log: [{type: 'leave', time: new Date().getTime()}]});
-        else if (!server.log) server.log = [{type: 'leave', time: new Date().getTime()}];
-        else server.log.push({type: 'leave', time: new Date().getTime()});
-        server.currentlyInThere = false;
-        fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
-        embed.color = member.displayHexColor || global.blueCol;
+        let channelCache = member.guild.channels.cache.filter(ch => ch.type == 'text');
+        let channel = channelCache.get(ServerJSON[member.guild.id].leaveChannel) || channelCache.get(ServerJSON[member.guild.id].welcomeChannel) || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
+        if (!channel) return;
+
+        let embed = {color: global.blueCol, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
+        embed.color = member.displayHexColor || global.orangeCol;
         embed.title = nick(member);
-        embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096});
         embed.description = `bye, ${member} 😢`;
+        embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096});
+        embed.footer = {text: 'alexa, play despacito', icon_url: member.guild.iconURL({dynamic: true})};
+        let topPictureText = `goodbye,`;
+        
+        
+        let fakeServer = {}
+        if (!UserJSON[member.user.id]) await bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
+        if (!UserJSON[member.user.id]?.servers.map(s => s?.guildId).includes(member.guild.id))
+            UserJSON[member.user.id]?.servers.push({guildId: member.guild.id, time: new Date().getTime(), log: [], currentlyInThere: false});
+        let server = UserJSON[member.user.id]?.servers.find(s => s.guildId == member.guild.id) || fakeServer;
+        if (!server?.log) server.log = [];
+        server.currentlyInThere = false;
+        server.log.push({type: 'leave', time: new Date().getTime()});
+
+        if (member.guild.me.hasPermission('VIEW_AUDIT_LOG'))
+        {
+            let allLogs = await member.guild.fetchAuditLogs({limit: 3});
+            allLogs = allLogs.entries.sort((a, b) => b.createdTimestamp - a.createdTimestamp).filter(e => e.target.id == member.id).first();
+            let reason = allLogs.reason;
+            let action = allLogs.action;
+            switch (action)
+            {
+                case 'MEMBER_KICK':
+                    server.log[server.log.length - 1].type += ':kick';
+                    embed.title = `${member.user.tag} has been kicked from this server`;
+                    embed.description = `${member.guild.member(allLogs.executor)} has kicked ${member}`;
+                    embed.footer.text = `shacking and criing rn`;
+                    topPictureText = `${allLogs.executor.tag} has kicked`;
+                    break;
+                case 'MEMBER_PRUNE':
+                    server.log[server.log.length - 1].type += ':prune'
+                    embed.title = `${member.user.tag} has been removed from this server due to pruning`;
+                    embed.description = `${member.guild.member(allLogs.executor)} has pruned ${member}`;
+                    embed.footer.text = `they will be missed... (or not)`;
+                    topPictureText = `${allLogs.executor.tag} has pruned`;
+                    break;
+                case 'MEMBER_BAN_ADD':
+                    server.log[server.log.length - 1].type += ':ban';
+                    embed.title = `${member.user.tag} has been banned.`;
+                    embed.description = `${member} has been banned by ${member.guild.member(allLogs.executor)}`;
+                    let banInfo = await member.guild.fetchBan(member.user);
+                    if (banInfo.reason) reason = banInfo.reason;
+                    embed.footer.text = 'rip in peace'
+                    topPictureText = `${allLogs.executor.tag} has banned`;
+                    break;
+            }
+            if (reason) embed.fields.push({name: 'reason', value: `"${reason}"`});
+            if (allLogs.extra) embed.fields.push({name: 'extra info', value: allLogs.extra});
+        }
+        fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+        
+        // console.log(embed.fields);
         embed.fields.push(
             {name: 'they were a member for', value: `${when(new Date().getTime() - member.joinedTimestamp)}\nthey joined on ${dateFormat(member.joinedAt, dateMask, true)} UTC`},
             {name: 'id', value: member.user.id}
         );
-        embed.footer = {text: 'alexa, play despacito', icon_url: member.guild.iconURL({dynamic: true})};
         let lastMsg = member.lastMessage;
-        if (lastMsg?.content) embed.fields.push({name: 'last message', value: `"${lastMsg.content}", sent at ${dateFormat(lastMsg.createdAt, dateMask, true)} UTC in ${lastMsg.channel}`});
-        let channelCache = member.guild.channels.cache.filter(ch => ch.type == 'text');
-        let channel = ServerJSON[member.guild.id].leaveChannel || ServerJSON[member.guild.id].welcomeChannel || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
-        if (!channel) return;
+        if (lastMsg?.content) embed.fields.push({name: 'last message', value: `"${lastMsg.content}",\nsent at ${dateFormat(lastMsg.createdAt, dateMask, true)} in ${lastMsg.channel}`});
 
         const canvas = Canvas.createCanvas(1050, 450);
         const ctx = canvas.getContext('2d');
@@ -117,8 +155,8 @@ module.exports =
         ctx.font = placeText(canvas, member.user.tag, canvas.width - (rectOffset * 2) - canvas.width/3 - 10);
         ctx.fillStyle = `rgb(255, 150, 200)`;
         ctx.fillText(member.user.tag, canvas.width/3, canvas.height/1.8);
-        ctx.font = placeText(canvas, `goodbye,`, canvas.width - rectOffset - canvas.width/3);
-        ctx.fillText(`goodbye,`, canvas.width/3  - 10, canvas.height/4);
+        ctx.font = placeText(canvas, topPictureText, canvas.width - rectOffset - canvas.width/3);
+        ctx.fillText(topPictureText, canvas.width/3  - 10, canvas.height/4);
         ctx.font = placeText(canvas, `there are now ${member.guild.memberCount} members`, canvas.width - (rectOffset * 2) - 270);
         ctx.fillText(`there are now ${member.guild.memberCount} members.`, canvas.width/3 - 50, canvas.height * 7/8 - 20);
         ctx.font = placeText(canvas, dateFormat(Date.now(), 'fullDate', true), 250);

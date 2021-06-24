@@ -119,13 +119,12 @@ function when(ms)
     return arr.pop() + ' ago';
 }
 
-let embed = {color: global.blueCol, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
-
 module.exports =
 {
     name: 'guildMemberAdd', description: 'what to do when a new member joins', hide: true,
     async execute(bot, member)
     {
+        let embed = {color: global.blueCol, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
         if (!member.user.bot)
         {
             if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);

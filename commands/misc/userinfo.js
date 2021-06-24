@@ -1,6 +1,7 @@
 const UserJSON = require('../../DB/users.json');
 const dateFormat = require('dateformat');
 const search = require('discord.js-search');
+const when = require('../util/when');
 
 const bth = { true: 'yes', false: 'no' };
 
@@ -66,53 +67,6 @@ const activityType =
     COMPETING: 'competing'
 };
 
-const yr = 1000 * 60 * 60 * 24 * 365;
-const mo = yr/12;
-const wk = 1000 * 60 * 60 * 24 * 7;
-const dy = wk/7;
-const hr = dy/24;
-const min = hr/60;
-const sec = min/60;
-const msec = sec/1000;
-
-function weirdS(num)
-{
-    if (num != 1) return 's';
-    return '';
-}
-
-function when(ms)
-{
-    let arr = [];
-    let years = Math.floor(ms/yr);
-    if (years >= 1) arr.push(`${years} year${weirdS(years)}`);
-    ms -= years * yr;
-    let months = Math.floor(ms/mo);
-    if (months >= 1) arr.push(`${months} month${weirdS(months)}`);
-    ms -= months * mo;
-    let weeks = Math.floor(ms/wk);
-    if (weeks >= 1) arr.push(`${weeks} week${weirdS(weeks)}`);
-    ms -= weeks * wk;
-    let days = Math.floor(ms/dy);
-    if (days >= 1) arr.push(`${days} day${weirdS(days)}`);
-    ms -= days * dy;
-    let hours = Math.floor(ms/hr);
-    if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
-    ms -= hours * hr;
-    let minutes = Math.floor(ms/min);
-    if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
-    ms -= minutes * min;
-    let seconds = Math.floor(ms/sec);
-    if (seconds >= 1) arr.push(`${seconds} seconds`);
-    ms -= seconds * sec;
-    let milliseconds = Math.floor(ms/msec);
-    if (milliseconds >= 1) arr.push(`${milliseconds} milliseconds`);
-
-    if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()} ago`;
-    if (arr.length > 1) return `${arr.slice(0, -1).join(', ')} and ${arr.pop()} ago`;
-    return arr.pop() + ' ago';
-}
-
 module.exports =
 {
     name: ['ui', 'userinfo'], description: 'displays information about a user', usage: '[pref]ui ?<mention, id, nickname, username, tag>\nexample: [pref]ui jeff#0001',
@@ -136,11 +90,11 @@ module.exports =
        let nick = '';
        if (asGuildMember.displayName != target.username) nick = `(${asGuildMember.displayName})`;
 
-       let creatednDaysAgo = when( new Date().getTime() - target.createdTimestamp );
+       let creatednDaysAgo = when( new Date().getTime() - target.createdTimestamp , true );
        let created = `${dateFormat(target.createdAt, 'default', true)} UTC`;
        finalCreatedDateThingText = `${creatednDaysAgo}\n${created}`;
 
-       let joinednDaysAgo = when( new Date().getTime() - asGuildMember.joinedTimestamp );
+       let joinednDaysAgo = when( new Date().getTime() - asGuildMember.joinedTimestamp , true );
        let joined = `${dateFormat(asGuildMember.joinedAt, 'default', true)} UTC`;
        finalJoiendDateThingText = `${joinednDaysAgo}\n${joined}`;
 
@@ -154,9 +108,9 @@ module.exports =
 
        let presence = `${pres[target.presence.status]}`;
        let presenceAgo = '';
-       if (target.presence.activities[0]) presenceAgo = `, set ${when( new Date().getTime() - target.presence.activities[0].createdTimestamp)}`;
+       if (target.presence.activities[0]) presenceAgo = `, set ${when( new Date().getTime() - target.presence.activities[0].createdTimestamp, true)}`;
 
-       let boostUsedAgo = when( new Date().getTime() - asGuildMember.premiumSinceTimestamp);
+       let boostUsedAgo = when( new Date().getTime() - asGuildMember.premiumSinceTimestamp, true);
 
        let highest = `${asGuildMember.roles.highest}, ${asGuildMember.roles.highest.position} from the bottom\nand ${message.guild.roles.cache.size - asGuildMember.roles.highest.position} from the top`;
        let more = asGuildMember.roles.cache.size;
@@ -169,7 +123,7 @@ module.exports =
                     {name: 'can i kick them? can i ban them? can i manage them otherwise?', 
                     value: `${bth[asGuildMember.bannable]}, ${bth[asGuildMember.kickable]}, and ${bth[asGuildMember.manageable]}`}]
        };
-       if (lastMessage != undefined) embed.fields.push({ name: 'last message', value: `"${lastMessage.content}", sent ${when(new Date().getTime() - lastMessage.createdTimestamp)} in ${lastMessage.channel}`});
+       if (lastMessage != undefined) embed.fields.push({ name: 'last message', value: `"${lastMessage.content}", sent ${when(new Date().getTime() - lastMessage.createdTimestamp, true)} in ${lastMessage.channel}`});
        if (asGuildMember.roles.cache.size > 0) embed.fields.push({ name: 'highest role', value: `${highest}${more}`});
        if (asGuildMember.premiumSinceTimestamp !== 0) embed.fields.push({name: 'boosting this server since', 
             value: `${boostUsedAgo}\n${dateFormat(asGuildMember.premiumSince, 'default', true)} UTC`});
@@ -177,7 +131,7 @@ module.exports =
        {
            embed.fields.push({name: 'presence', value: `${presence}${presenceAgo}`});
            (target.presence.activities.filter(a => a.type !== 'CUSTOM_STATUS')
-           .forEach(activity => embed.fields[embed.fields.length - 1].value += `\n${activityType[activity.type]} ${activity.name}, set ${when(new Date().getTime() - activity.createdTimestamp)}`));
+           .forEach(activity => embed.fields[embed.fields.length - 1].value += `\n${activityType[activity.type]} ${activity.name}, set ${when(new Date().getTime() - activity.createdTimestamp, true)}`));
        }
        let flagsVal;
        if (target.flags.toArray().length > 0)

@@ -3,41 +3,7 @@ const fs = require('fs');
 const ConfigJSON = require('../../DB/config.json');
 const SecretJSON = require('../../DB/secret.json');
 const UserJSON = require('../../DB/users.json');
-
-const yr = 1000 * 60 * 60 * 24 * 365;
-const mo = yr/12;
-const wk = 1000 * 60 * 60 * 24 * 7;
-const dy = wk/7;
-const hr = dy/24;
-const min = hr/60;
-const sec = min/60;
-const msec = sec/1000;
-
-function weirdS(num)
-{
-    if (num != 1) return 's';
-    return '';
-}
-
-function when(ms)
-{
-    let arr = [];
-    let hours = Math.floor(ms/hr);
-    if (hours >= 1) arr.push(`${hours} hour${weirdS(hours)}`);
-    ms -= hours * hr;
-    let minutes = Math.floor(ms/min);
-    if (minutes >= 1) arr.push(`${minutes} minute${weirdS(minutes)}`);
-    ms -= minutes * min;
-    let seconds = Math.floor(ms/sec);
-    if (seconds >= 1) arr.push(`${seconds} second${weirdS(seconds)}`);
-    ms -= seconds * sec;
-    let milliseconds = Math.floor(ms/msec);
-    if (milliseconds >= 1) arr.push(`${milliseconds} millisecond${weirdS(milliseconds)}`);
-
-    if (arr.length > 2) return `${arr.slice(0, -1).join(', ')}, and ${arr.pop()}`;
-    if (arr.length > 1) return `${arr.slice(0, -1).join(', ')} and ${arr.pop()}`;
-    return arr.pop();
-}
+const when = require('../util/when');
 
 const questions = ['what command gave you the issue', 'what happened? it would be helpful if you gave a description and/or a screenshot. thanks!', 'thanks for reporting the issue! i\'ll be on it straight away!'];
 let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};

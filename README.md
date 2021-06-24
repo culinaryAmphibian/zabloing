@@ -47,7 +47,11 @@ js | yes
 * ### advanced user search for mute and purge commands
 
 ## todo
-###  fix: prevent self mutes
+###  fix: better mute
+[ ] prevent self mutes
+[ ] prevent bot self mute
+[ ] prevent mute role being removed by leaving the server
+[ ] add channel overwrites for the role
 ### responses to more client events
 * guildMemberUpdate(oldMember, newMember)
 * guildUpdate(oldGuild, newGuild)

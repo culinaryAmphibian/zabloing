@@ -1,61 +1,12 @@
 const UserJSON = require('../../DB/users.json');
 const dateFormat = require('dateformat');
 const search = require('discord.js-search');
+const ConfigJSON = require('../../DB/config.json');
+const perms = ConfigJSON.permsDictionary;
+const flags = ConfigJSON.flags;
 const when = require('../util/when');
 
 const bth = { true: 'yes', false: 'no' };
-
-const flags =
-{
-	DISCORD_EMPLOYEE: 'discord employee',
-	DISCORD_PARTNER: 'discord partner',
-	BUGHUNTER_LEVEL_1: 'bug hunter level 1',
-	BUGHUNTER_LEVEL_2: 'bug hunter level 2',
-	HYPESQUAD_EVENTS: 'hypesquad events',
-	HOUSE_BRAVERY: 'house of bravery',
-	HOUSE_BRILLIANCE: 'house of brilliance',
-	HOUSE_BALANCE: 'house of balance',
-	EARLY_SUPPORTER: 'early supporter',
-	TEAM_USER: 'team user',
-	SYSTEM: 'system',
-	VERIFIED_BOT: 'verified bot',
-	VERIFIED_DEVELOPER: 'verified bot developer'
-};
-
-const perms =
-{
-    ADMINISTRATOR: 'admin',
-    CREATE_INSTANT_INVITE: 'create invites',
-    KICK_MEMBERS: 'kick members',
-    BAN_MEMBERS: 'ban members',
-    MANAGE_CHANNELS: 'edit and reorder channels',
-    MANAGE_GUILD: 'edit the guild information, region, etc.',
-    ADD_REACTIONS: 'add new reactions to messages',
-    VIEW_AUDIT_LOG: 'view audit log',
-    PRIORITY_SPEAKER: 'priority speaker',
-    STREAM: 'stream into vc',
-    VIEW_CHANNEL: 'view channels',
-    SEND_MESSAGES: 'send messages',
-    SEND_TTS_MESSAGES: 'send tts messages',
-    MANAGE_MESSAGES: 'delete messages and reactions',
-    EMBED_LINKS: 'embed links',
-    ATTACH_FILES: 'attach files',
-    READ_MESSAGE_HISTORY: 'view past messages',
-    MENTION_EVERYONE: 'mention everyone',
-    USE_EXTERNAL_EMOJIS: 'use external emojis',
-    VIEW_GUILD_INSIGHTS: 'view guild insights',
-    CONNECT: 'connect to a voice channel',
-    SPEAK: 'speak in a voice channel',
-    MUTE_MEMBERS: 'mute members',
-    DEAFEN_MEMBERS: 'deafen members',
-    MOVE_MEMBERS: 'move members between voice channels',
-    USE_VAD: 'use voice activity detection',
-    CHANGE_NICKNAME: 'change nickname',
-    MANAGE_NICKNAMES: 'change other members\' nicknames',
-    MANAGE_ROLES: 'manage roles',
-    MANAGE_WEBHOOKS: 'manage webhooks',
-    MANAGE_EMOJIS: 'manage emojis'
-};
 
 const pres = {'dnd': 'do not disturb', 'idle': 'idle', 'offline': 'offline', 'online': 'online'};
 const activityType =

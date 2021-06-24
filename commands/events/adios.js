@@ -32,6 +32,17 @@ module.exports =
     name: 'guildMemberRemove', description: 'what to do when a member leaves', hide: true,
     async execute(bot, member)
     {
+        let fakeServer = {}
+        if (!UserJSON[member.user.id]) await bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
+        if (!UserJSON[member.user.id]?.servers.map(s => s?.guildId).includes(member.guild.id))
+            UserJSON[member.user.id]?.servers.push({guildId: member.guild.id, time: new Date().getTime(), log: [], currentlyInThere: false});
+        let server = UserJSON[member.user.id]?.servers.find(s => s.guildId == member.guild.id) || fakeServer;
+        if (!server?.log) server.log = [];
+        server.currentlyInThere = false;
+        server.log.push({type: 'leave', time: new Date().getTime()});
+        if (!server.roles) server.roles = [];
+        member.roles.cache.filter(r => server.roles.includes(r.id)).each(r => server.roles.push(r.id));
+
         let channelCache = member.guild.channels.cache.filter(ch => ch.type == 'text');
         let channel = channelCache.get(ServerJSON[member.guild.id].leaveChannel) || channelCache.get(ServerJSON[member.guild.id].welcomeChannel) || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
         if (!channel) return;
@@ -43,16 +54,6 @@ module.exports =
         embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096});
         embed.footer = {text: 'alexa, play despacito', icon_url: member.guild.iconURL({dynamic: true})};
         let topPictureText = `goodbye,`;
-        
-        
-        let fakeServer = {}
-        if (!UserJSON[member.user.id]) await bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
-        if (!UserJSON[member.user.id]?.servers.map(s => s?.guildId).includes(member.guild.id))
-            UserJSON[member.user.id]?.servers.push({guildId: member.guild.id, time: new Date().getTime(), log: [], currentlyInThere: false});
-        let server = UserJSON[member.user.id]?.servers.find(s => s.guildId == member.guild.id) || fakeServer;
-        if (!server?.log) server.log = [];
-        server.currentlyInThere = false;
-        server.log.push({type: 'leave', time: new Date().getTime()});
 
         if (member.guild.me.hasPermission('VIEW_AUDIT_LOG'))
         {
@@ -90,8 +91,6 @@ module.exports =
             if (allLogs.extra) embed.fields.push({name: 'extra info', value: allLogs.extra});
         }
         fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
-        
-        // console.log(embed.fields);
         embed.fields.push(
             {name: 'they were a member for', value: `${when(new Date().getTime() - member.joinedTimestamp)}\nthey joined on ${dateFormat(member.joinedAt, dateMask, true)} UTC`},
             {name: 'id', value: member.user.id}

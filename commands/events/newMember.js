@@ -54,6 +54,7 @@ module.exports =
             serverJoined.currentlyInThere = true;
             serverJoined.joins++;
             fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
+            if (member.guild.me.hasPermission('MANAGE_ROLES')) member.roles.add(serverJoined.roles.filter(r => member.guild.roles.cache.has(r)));
         }
         embed.title += `${member.user.tag}!`;
         embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096})

@@ -40,8 +40,8 @@ module.exports =
         if (!server?.log) server.log = [];
         server.currentlyInThere = false;
         server.log.push({type: 'leave', time: new Date().getTime()});
-        if (!server.roles) server.roles = [];
-        member.roles.cache.filter(r => server.roles.includes(r.id)).each(r => server.roles.push(r.id));
+        server.roles = [];
+        member.roles.cache.each(r => server.roles.push(r.id));
 
         let channelCache = member.guild.channels.cache.filter(ch => ch.type == 'text');
         let channel = channelCache.get(ServerJSON[member.guild.id].leaveChannel) || channelCache.get(ServerJSON[member.guild.id].welcomeChannel) || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
@@ -59,8 +59,8 @@ module.exports =
         {
             let allLogs = await member.guild.fetchAuditLogs({limit: 3});
             allLogs = allLogs.entries.sort((a, b) => b.createdTimestamp - a.createdTimestamp).filter(e => e.target.id == member.id).first();
-            let reason = allLogs.reason;
-            let action = allLogs.action;
+            let reason = allLogs?.reason;
+            let action = allLogs?.action;
             switch (action)
             {
                 case 'MEMBER_KICK':

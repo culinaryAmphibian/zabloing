@@ -3,7 +3,6 @@ const config = require('../../DB/config.json');
 const secretJSON = require('../../DB/secret.json');
 const badWords = secretJSON.badWords;
 
-// const bg = config.captcha.bg;
 const fonts = config.captcha.fonts;
 const chars = config.captcha.chars;
 
@@ -38,7 +37,6 @@ function fisheye(ctx, level, x, y, width, height)
     {
         const sx = (i / 4) % frame.width;
         const sy = Math.floor(i / 4 / frame.width);
-        // const sy = Math.floor(i / 4 / frame.height);
 
         const dx = Math.floor(frame.width / 2) - sx;
         const dy = Math.floor(frame.height / 2) - sy;
@@ -46,7 +44,6 @@ function fisheye(ctx, level, x, y, width, height)
         const dist = Math.sqrt( (dx * dx) + (dy * dy) );
 
         const x2 = Math.round( (frame.width / 2) - (dx * Math.sin(dist / (level * Math.PI) / 2)));
-        // const y2 = Math.round( (frame.height / 2) - (dx * Math.sin(dist / (level * Math.PI) / 2)));
         const y2 = Math.round( (frame.height / 2) - ( dy * Math.sin(dist / (level * Math.PI) / 2)));
         const i2 = ((y2 * frame.width) + x2) * 4;
 
@@ -61,7 +58,7 @@ function fisheye(ctx, level, x, y, width, height)
 
 module.exports =
 {
-    name: ['captcha'],
+    name: 'captcha', hide: true,
     async execute(message)
     {
         let captcha = await badWordCheck();
@@ -76,6 +73,7 @@ module.exports =
         ctx.rotate((Math.floor(Math.random() * 50) - 15) * ( Math.PI/180));
 
         const attachment = canvas.toBuffer('image/png');
-        return message.channel.send({files:[attachment]});
+        message.channel.send({files:[attachment]});
+        return captcha;
     }
 }

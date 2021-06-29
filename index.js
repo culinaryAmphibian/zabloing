@@ -27,7 +27,7 @@ bot.on('message', async(message) =>
     if (!message.content.startsWith(prefix)) return;
     let args = message.content.slice(prefix.length).split(' ');
     let a = args[0].toLowerCase();
-    if (ServerJSON[message.guild.id].disabled?.find?.(cName => cName == args[0] || cName == args.join(' ') || bot.commands.find(c => c.name.includes(a) && c.name.includes(cName)))) return;
+    if (ServerJSON[message.guild.id].disabled?.find?.(cName => cName == args[0] || cName == args.join(' ') || bot.commands.find(c => c.name.includes(a) && c.name.includes(cName))) || (ServerJSON[message.guild.id]?.pendingMembers?.includes(message.author.id) && a !== 'verify')) return;
     if (ConfigJSON.imageLinks.images[a] || ConfigJSON.imageLinks.videos[a])
     return bot.commandsForInternalProcesses.get('arbImg').execute(message, a);
     if (ServerJSON[message.guild.id].cmds?.map?.(c => c.name).includes?.(args.join(" ")))
@@ -35,7 +35,7 @@ bot.on('message', async(message) =>
     let command = bot.commands.find(c => c.name.includes(a))
     if (!command) return;
     global.blueCol = global.orangeCol = global.greenCol = global.redCol = await bot.commandsForInternalProcesses.get('rainbow').execute(message.guild.id);
-    command.execute(message, args, bot);
+    return command.execute(message, args, bot);
 });
 
 bot.login(require('./DB/secret.json').token);

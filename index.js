@@ -1,13 +1,8 @@
-const Discord = require('discord.js');
-const bot = new Discord.Client();
-const ConfigJSON = require('./DB/config.json');
+const {Client} = require('discord.js');
+const bot = new Client();
+const {imageLinks} = require('./DB/config.json');
 const ServerJSON = require('./DB/servers.json');
 require('./commands/util/embColors').execute(global);
-bot.on('guildBanAdd', (guild, user) => bot.commandsForInternalProcesses.get('guildBanAdd').execute(bot, guild, user));
-bot.on('guildCreate', guild => bot.commandsForInternalProcesses.get('guildCreate').execute(bot, guild));
-bot.on('guildMemberAdd', member => bot.commandsForInternalProcesses.get('guildMemberAdd').execute(bot, member));
-bot.on('guildMemberRemove', member => bot.commandsForInternalProcesses.get('guildMemberRemove').execute(bot, member));
-bot.on('guildDelete', guild => bot.commandsForInternalProcesses.get('guildRemove').execute(guild));
 bot.on('ready', () => require('./cmdInit').execute(bot));
 bot.on('message', async(message) =>
 {
@@ -28,10 +23,11 @@ bot.on('message', async(message) =>
     let args = message.content.slice(prefix.length).split(' ');
     let a = args[0].toLowerCase();
     if (ServerJSON[message.guild.id].disabled?.find?.(cName => cName == args[0] || cName == args.join(' ') || bot.commands.find(c => c.name.includes(a) && c.name.includes(cName))) || (ServerJSON[message.guild.id]?.pendingMembers?.includes(message.author.id) && a !== 'verify')) return;
-    if (ConfigJSON.imageLinks.images[a] || ConfigJSON.imageLinks.videos[a])
+    if (imageLinks.images[a] || imageLinks.videos[a])
     return bot.commandsForInternalProcesses.get('arbImg').execute(message, a);
     if (ServerJSON[message.guild.id].cmds?.map?.(c => c.name).includes?.(args.join(" ")))
     return bot.commandsForInternalProcesses.get('custom').execute(message, bot);
+    if (require('./DB/secret.json').ownerId == message.author.id) bot.commands = bot.commandsForInternalProcesses;
     let command = bot.commands.find(c => c.name.includes(a))
     if (!command) return;
     global.blueCol = global.orangeCol = global.greenCol = global.redCol = await bot.commandsForInternalProcesses.get('rainbow').execute(message.guild.id);

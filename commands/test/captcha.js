@@ -1,10 +1,6 @@
-const Canvas = require('canvas');
-const config = require('../../DB/config.json');
-const secretJSON = require('../../DB/secret.json');
-const badWords = secretJSON.badWords;
-
-const fonts = config.captcha.fonts;
-const chars = config.captcha.chars;
+const {createCanvas} = require('canvas');
+const {captcha: {fonts, chars}} = require('../../DB/config.json');
+const {badWords} = require('../../DB/secret.json');
 
 function captchaGen()
 {
@@ -62,7 +58,7 @@ module.exports =
     async execute(message)
     {
         let captcha = await badWordCheck();
-        const canvas = Canvas.createCanvas( 500, 250);
+        const canvas = createCanvas( 500, 250);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -73,7 +69,7 @@ module.exports =
         ctx.rotate((Math.floor(Math.random() * 50) - 15) * ( Math.PI/180));
 
         const attachment = canvas.toBuffer('image/png');
-        message.channel.send({files:[attachment]});
+        message.channel.send('please send the text code in the image', {files:[attachment]});
         return captcha;
     }
 }

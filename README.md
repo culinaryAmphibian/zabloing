@@ -10,8 +10,7 @@
 ![a](https://img.shields.io/badge/lemon-sour-ffe500.svg)
 [![a](https://img.shields.io/badge/crab-cowboy-009900.svg)](https://cdn.discordapp.com/attachments/443467585980203018/723479044317904956/cbo1rI6p_400x400.png)
 ![a](https://img.shields.io/badge/gaming-extremely-blue.svg)
-![a](https://img.shields.io/badge/now%20what-i'm%20not%20sure-811ad8.svg)
-[![a](https://img.shields.io/badge/hotel-trivago-2b2299.svg)](https://www.trivago.com/)
+[![a](https://img.shields.io/badge/hotel-trivago-811ad8.svg)](https://www.trivago.com/)
 
 ```javascript
 console.log('hello world!')
@@ -50,7 +49,6 @@ js | yes
 ###  fix: better mute
 [ ] prevent self mutes
 [ ] prevent bot self mute
-[ ] prevent mute role being removed by leaving the server
 [ ] add channel overwrites for the role
 ### responses to more client events
 * guildMemberUpdate(oldMember, newMember)

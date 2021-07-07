@@ -1,4 +1,4 @@
-const fs = require('fs');
+const {writeFileSync} = require('fs');
 const UserJSON = require('../../DB/users.json');
 
 module.exports =
@@ -40,6 +40,7 @@ module.exports =
                 }
             }
         }
-        return fs.writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
+        writeFileSync("./DB/users.json", JSON.stringify(UserJSON, null, 2));
+        return UserJSON[user.id];
     }
 }

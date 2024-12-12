@@ -1,4 +1,4 @@
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 
 let errEmbed = {color: global.orangeCol, title: 'error', description: 'please specify an emoji', footer: global.footer};
 const bth = { false: 'no', true: 'yes' };

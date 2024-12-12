@@ -1,6 +1,5 @@
 const UserJSON = require('../../DB/users.json');
-const dateFormat = require('dateformat');
-const search = require('discord.js-search');
+const dateFormat = import('dateformat');
 const ConfigJSON = require('../../DB/config.json');
 const perms = ConfigJSON.permsDictionary;
 const flags = ConfigJSON.flags;
@@ -27,10 +26,7 @@ module.exports =
         let mentioned = message.mentions.members.first();
         if (mentioned) target = mentioned.user;
         else if (args[1])
-        {
-            let j = await(search.searchMember(message, args.slice(1).join(" "), true));
-            target = j.user
-        }
+            target = (await message.guild.members.list()).find((u) => u.nickname.includes(query) || u.user.displayName.includes(query)).user;
         else target = message.author;
 
        let avLink = target.displayAvatarURL({dynamic:true, size: 4096});

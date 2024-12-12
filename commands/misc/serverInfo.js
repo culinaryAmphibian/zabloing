@@ -1,4 +1,4 @@
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 const when = require('../util/when');
 
 let bTN = { undefined: 0 };

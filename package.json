@@ -1,0 +1,25 @@
+{
+  "name": "zabloing",
+  "version": "1.0.0",
+  "description": "![a](https://img.shields.io/badge/version-0.5-009900.svg)\r ![a](https://img.shields.io/badge/since-december%2015th%202020-009900.svg)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.0",
+    "canvas": "^2.11.2",
+    "dateformat": "^5.0.3",
+    "delivery-tracker": "^2.8.3",
+    "dependencies": "^0.0.1",
+    "discord.js": "^14.16.3",
+    "g-i-s": "^2.1.7",
+    "google-it": "^1.6.4",
+    "str-compare": "^0.1.2",
+    "tracking-number-validation": "^2.0.2",
+    "weather-js": "^2.0.0"
+  }
+}

@@ -1,5 +1,5 @@
 const compare = require('str-compare');
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 const ms = require('ms');
 
 function member(query, allMembers)

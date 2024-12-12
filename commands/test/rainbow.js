@@ -67,11 +67,9 @@ function hsl2rgb(h, s = 100, l = 50)
     return {rgb: [r, g, b], hex: `#${hex}`};
 }
 
-module.exports =
-{
+module.exports = {
     name: 'rainbow', hide: true,
-    execute(guildId)
-    {
+    execute(guildId) {
 		let lastCol = ServerJSON[guildId].lastEmbedHue;
 		if ((!'lastEmbedHue' in ServerJSON[guildId]) || (lastCol > 359)) lastCol = -30;
 		lastCol += 30;

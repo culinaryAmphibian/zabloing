@@ -1,5 +1,3 @@
-const { searchMember } = require('discord.js-search');
-
 let errEmbed = {color: global.orangeCol, title: 'error', description: 'sorry, i could not find that user.', footer: global.footer};
 
 module.exports =
@@ -18,7 +16,7 @@ module.exports =
             else if (args[1])
             {
                 let query = args.slice(1).join(" ");
-                let x = await(searchMember(message, query, true));
+                let x = (await message.guild.members.list()).find((u) => u.nickname.includes(query) || u.user.displayName.includes(query))
                 if (x == undefined) return message.channel.send({embed:errEmbed});
                 target = x.user;
             }

@@ -1,5 +1,4 @@
 const fs = require('fs');
-const search = require('discord.js-search');
 const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 const ServerJSON = require('../../DB/servers.json');
@@ -39,7 +38,7 @@ module.exports =
         else
         {
             let query = args.slice(2).join(" ");
-            let x = await(search.searchMember(message, query, true));
+            let x = (await message.guild.members.list()).find((u) => u.nickname.includes(query) || u.user.displayName.includes(query))
             message.channel.send(`are you sure that you want to transfer ${money} ${ConfigJSON.currency} to ${x.user.tag}?`);
             let filter = m => m.author.id === message.author.id && (m.content.includes('n') || m.content.includes('y'));
             let j = await(message.channel.awaitMessages(filter, {max:1}));

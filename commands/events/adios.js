@@ -1,5 +1,5 @@
 const Canvas = require('canvas');
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 const fs = require('fs');
 const ServerJSON = require('../../DB/servers.json');
 const UserJSON = require('../../DB/users.json');

@@ -1,4 +1,4 @@
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 const tracker = require('delivery-tracker');
 const validator = require('tracking-number-validation');
 

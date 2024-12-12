@@ -1,4 +1,4 @@
-const dateFormat = require('dateformat');
+const dateFormat = import('dateformat');
 
 module.exports =
 {

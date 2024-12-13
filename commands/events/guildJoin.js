@@ -15,7 +15,7 @@ module.exports =
         embed.footer.icon_url = guild.iconURL({dynamic: true}) || bot.user.displayAvatarURL({dynamic: true});
         if (!ServersJSON[guild.id])
         {
-            await bot.commandsForInternalProcesses.get('newServer').execute(guild);
+            await bot.allCommands.get('newServer').execute(guild);
             embed.title = `hi, i\'m ${bot.user.username}!`;
             embed.description = 'nice to meet you';
             embed.fields.push({ name: 'prefix', value: 'my prefix by default is "."'},

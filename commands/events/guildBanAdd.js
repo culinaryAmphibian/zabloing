@@ -29,7 +29,7 @@ module.exports =
     async execute(bot, guild, user)
     {
         if (guild.me.hasPermission('VIEW_AUDIT_LOG')) return;
-        if (!user.bot && !UserJSON[user.id]) await bot.commandsForInternalProcesses.get('newUser').execute(user, guild.id);
+        if (!user.bot && !UserJSON[user.id]) await bot.allCommands.get('newUser').execute(user, guild.id);
         let serverLeft = UserJSON[user.id]?.servers?.find(s => s?.guildId == guild.id);
         if (!serverLeft?.log) serverLeft.log = [];
         serverLeft?.log.push({type: 'leave:ban', time: new Date().getTime()});

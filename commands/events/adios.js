@@ -33,7 +33,7 @@ module.exports =
     async execute(bot, member)
     {
         let fakeServer = {}
-        if (!UserJSON[member.user.id]) await bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
+        if (!UserJSON[member.user.id]) await bot.allCommands.get('newUser').execute(member.user, member.guild.id);
         if (!UserJSON[member.user.id]?.servers.map(s => s?.guildId).includes(member.guild.id))
             UserJSON[member.user.id]?.servers.push({guildId: member.guild.id, time: new Date().getTime(), log: [], currentlyInThere: false});
         let server = UserJSON[member.user.id]?.servers.find(s => s.guildId == member.guild.id) || fakeServer;

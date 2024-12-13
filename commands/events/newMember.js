@@ -47,7 +47,7 @@ module.exports =
         let embed = {color: global.blueCol, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
         if (!member.user.bot)
         {
-            if (!UserJSON[member.user.id]) bot.commandsForInternalProcesses.get('newUser').execute(member.user, member.guild.id);
+            if (!UserJSON[member.user.id]) bot.allCommands.get('newUser').execute(member.user, member.guild.id);
             let serverJoined = UserJSON[member.user.id].servers.find(s => s?.guildId == member.guild.id);
             if (!serverJoined) UserJSON[member.user.id].servers.push({guildId: member.guild.id, time: new Date().getTime(), log: [], joins: 0});
             serverJoined.log.push({type: 'join', time: new Date().getTime()});

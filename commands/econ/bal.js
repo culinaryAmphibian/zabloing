@@ -28,7 +28,7 @@ module.exports =
                     errorEmbed.description = `the found user (${target}) is a bot and cannot play the game.`;
                     return message.channel.send({embed:errorEmbed});
                 }
-                bot.commandsForInternalProcesses.get('newUser').execute(target.user, message.guild.id);
+                bot.allCommands.get('newUser').execute(target.user, message.guild.id);
             }
             embed.title = `${target.user.tag} has ${UserJSON[target.user.id].games.bal} ${currency}`;
         }

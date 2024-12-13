@@ -4,8 +4,7 @@ const ServerJSON = require('../../DB/servers.json');
 module.exports =
 {
     name: 'newServer', hide: true,
-    execute(guild)
-    {
+    execute(guild) {
         if (ServerJSON[guild.id]) return;
         ServerJSON[guild.id] =
         {

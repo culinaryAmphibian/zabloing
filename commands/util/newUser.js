@@ -4,8 +4,7 @@ const UserJSON = require('../../DB/users.json');
 module.exports =
 {
     name: 'newUser', description: 'what to write to the database when new user', hide: true,
-    execute(user, guildId)
-    {
+    execute(user, guildId) {
         if (UserJSON[user.id] || user.bot) return;
         UserJSON[user.id] =
         {
@@ -24,6 +23,7 @@ module.exports =
                     currentlyInThere: true
                 }
             ],
+            msgs: 0,
             ignore: false, msgs: 0,
             cooldowns: { hangman: 0, googleImages: 0 },
             games:

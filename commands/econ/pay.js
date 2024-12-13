@@ -50,7 +50,7 @@ module.exports =
         {
             errorEmbed.description = `${target} is a bot and cannot play the game.`;
             if (target.user.bot) return message.channel.send({embed:errorEmbed});
-            bot.commandsForInternalProcesses.get('newUser').execute(target.user, message.guild.id);
+            bot.allCommands.get('newUser').execute(target.user, message.guild.id);
         }
         errorEmbed.description = 'you don\'t have enough money!';
         if (money > UserJSON[message.author.id].games.bal) return message.channel.send({embed:errorEmbed});

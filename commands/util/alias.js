@@ -28,7 +28,7 @@ module.exports =
 
             // if the user isn't supposed to use a command
             errEmbed.description = 'no secret commands for you!';
-            let secretcmds = bot.commandsForInternalProcesses.filter(c => c.hide);
+            let secretcmds = bot.allCommands.filter(c => c.hide);
             if (secretcmds.find(c => ((typeof c.name == 'string') && (c.name == cmdName)) || ((typeof c.name == 'object') && (c.name.includes(cmdName)))))
             return message.channel.send({embed: errEmbed});
 

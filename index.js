@@ -1,53 +1,36 @@
-const { Client, GatewayIntentBits } = require('discord.js');
-const { intents } = require('./DB/config.json');
-const bot = new Client({ intents: GatewayIntentBits.Guilds });
-const ServerJSON = require('./DB/servers.json');
+const { Client, GatewayIntentBits: { MessageContent, Guilds } } = require('discord.js');
+const { Collection } = require('discord.js');
+const { readdirSync } = require('fs');
+const bot = new Client({ intents: 1 + 2 + 4 + 8 + 64 + 512 + 1024 + 4096 + 32768 });
 const { token } = require('./DB/secret.json');
 
-require('./commands/util/embColors').execute();
+global.orange = (Math.floor(Math.random() * 25) + 230) * 65536 +
+    (Math.floor(Math.random() * 40) + 100) * 256 +
+    Math.floor(Math.random() * 35);
+global.blue = Math.floor(Math.random() * 50) * 65536 +
+    (Math.floor(Math.random() * 100) + 50) * 256 +
+    Math.floor(Math.random() * 25) + 230;
+global.green = Math.floor(Math.random() * 50) * 65536 +
+    (Math.floor(Math.random() * 54) + 200) * 256 +
+    Math.floor(Math.random() * 40) + 40;
+global.red = (Math.floor(Math.random() * 5) * 30 + 100) * 65536 +
+    (Math.floor(Math.random() * 50) + 20) * 256 +
+    Math.floor(Math.random() * 50) + 20;
 
-bot.on('ready', () => require('./cmdInit').execute(bot));
-
-bot.on('message', async(message) => {
-    if (message.author.bot)
-        return;
-    bot.commandsForInternalProcesses.get('userdb').execute(message, bot);
-    global.footer = {
-        text: message.author.username,
-        icon_url: message.author.displayAvatarURL({dynamic: true})
-    };
-    if (!message.guild) {
-        let cmd = bot.commands.find(c => c.dmOnly && c.name.includes(message.content.split(' ').shift()));
-        return cmd?.execute(message);
-    }
-    let prefix = ServerJSON[message.guild.id].prefix || '.';
-    if (!message.guild.me.hasPermission('SEND_MESSAGES') && message.member.hasPermission('ADMINISTRATOR'))
-        return message.author.send('i don\'t have the permission to send messages!');
-    if (message.content == `<@!${bot.user.id}>`)
-            message.channel.send(`hey there, my prefix here is ${prefix}`);
-    if (message.content.toLowerCase().endsWith('setprefix'))
-            return bot.commandsForInternalProcesses.get('setPrefix').execute(message);
-    if (!message.content.startsWith(prefix))
-            return;
-
-    let args = message.content.slice(prefix.length).split(' ');
-    let a = args[0].toLowerCase();
-    if (ServerJSON[message.guild.id].disabled?.find?.(cName => cName == args[0] ||
-        cName == args.join(' ') ||
-        bot.commands.find(c => c.name.includes(a) && c.name.includes(cName))) ||
-        (ServerJSON[message.guild.id]?.pendingMembers?.includes(message.author.id) && a !== 'verify'))
-        return;
-    if (ConfigJSON.imageLinks.images[a] || imageLinks.videos[a])
-        return bot.commandsForInternalProcesses.get('arbImg').execute(message, a);
-    if (ServerJSON[message.guild.id].cmds?.map?.(c => c.name).includes?.(args.join(" ")))
-        return bot.commandsForInternalProcesses.get('custom').execute(message, bot);
-    if (require('./DB/secret.json').ownerId == message.author.id)
-        bot.commands = bot.commandsForInternalProcesses;
-    let command = bot.commands.find(c => c.name.includes(a))
-    if (!command)
-        return;
-    [global.blueCol, global.orangeCol, global.greenCol, global.redCol] = await bot.commandsForInternalProcesses.get('rainbow').execute(message.guild.id);
-    return command.execute(message, args, bot);
+bot.commands = new Collection();
+readdirSync('./commands/').filter(folder => folder != 'events')
+    .forEach(folder => readdirSync(`./commands/${folder}/`)
+        .forEach(fileName => {
+            const file = require(`./commands/${folder}/${fileName}`);
+            bot.commands.set(file.name, file);
+        })
+    );
+bot.allCommands = bot.commands.clone();
+bot.commands.sweep(c => c.hide);
+const dir = './commands/events/';
+readdirSync(dir).forEach(event => {
+    const eventFile = require(`${dir}${event}`);
+    bot.on(eventFile.name, async (...args) => eventFile.execute(bot, args));
 });
 
 bot.login(token);

@@ -3,12 +3,12 @@
 ![a](https://img.shields.io/badge/version-0.5-009900.svg)
 ![a](https://img.shields.io/badge/since-december%2015th%202020-009900.svg)
 
-![zabongus](https://cdn.discordapp.com/attachments/443467585980203018/723479044317904956/cbo1rI6p_400x400.png)
+<image src="googas.jpg" height="200px" alt="zabongus">
 
 ![a](https://img.shields.io/badge/school%20grades-failing-cc0000.svg)
 [![a](https://img.shields.io/badge/code-broken-ff7b00.svg)](https://github.com/culinaryAmphibian/zabloing/issues)
 ![a](https://img.shields.io/badge/lemon-sour-ffe500.svg)
-[![a](https://img.shields.io/badge/crab-cowboy-009900.svg)](https://cdn.discordapp.com/attachments/443467585980203018/723479044317904956/cbo1rI6p_400x400.png)
+![a](https://img.shields.io/badge/crab-cowboy-009900.svg)
 ![a](https://img.shields.io/badge/gaming-extremely-blue.svg)
 [![a](https://img.shields.io/badge/hotel-trivago-811ad8.svg)](https://www.trivago.com/)
 
@@ -20,7 +20,12 @@ language | % of code in this project
 -------- | -------------
 js | yes
 
-<details><summary>click me 👃</summary>peekaboo</details>
+<details>
+<summary>click me 👃</summary>
+peekaboo!
+
+<image src="cowboy_crab.png" height="100px" alt="cowboy crab">
+</details>
 
 ***
 

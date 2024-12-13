@@ -14,8 +14,8 @@ module.exports =
     name: 'mod', description: 'a list of commands used for moderation', hide: true,
     execute(message, prefix)
     {
-        let modHelpEmbed = {color: global.blueCol, title: 'a list of commands for moderation', fields: [], footer: global.footer};
+        let modHelpEmbed = {color: global.blue, title: 'a list of commands for moderation', fields: [], footer: global.footer};
         modCommands.filter(c => !c.hide).each(cmd => modHelpEmbed.fields.push({name: `${prefix}${cmd.name[0]}`, value: cmd.description}));
-        return message.channel.send({embed:modHelpEmbed});
+        return message.channel.send({embeds:[modHelpEmbed]});
     }
 }

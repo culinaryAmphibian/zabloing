@@ -1,4 +1,4 @@
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'please enter a second argument', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'please enter a second argument', footer: global.footer};
 
 function arg(args)
 {
@@ -18,7 +18,7 @@ module.exports =
     note: '! gets the factorial of a number, rem gets the remainder from number 1 divided by number 2.\na second number might be required depending on the operation\nrad is only for trig operations because the answer defaults to degrees.',
     execute(message, args)
     {
-        if (!args[2]) return message.channel.send({embed:errEmbed});
+        if (!args[2]) return message.channel.send({embeds:[errEmbed]});
         args[2] = parseInt(args[2]);
         let factor = Math.PI/180;
         if (args[3] == 'rad') factor = 1;

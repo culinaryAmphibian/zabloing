@@ -4,7 +4,7 @@ module.exports =
     async execute(message, args, bot)
     {
         const pinging = await(message.channel.send('Pinging...'));
-        const embed = { color: global.blueCol, title: 'ping thing',
+        const embed = { color: global.blue, title: 'ping thing',
         fields: 
         [ 
             { name: 'time between my message and your message', value: `${pinging.createdTimestamp - message.createdTimestamp} ms`},

@@ -18,7 +18,7 @@ module.exports =
         if (!ServerJSON[message.guild.id].prefixEdits) ServerJSON[message.guild.id].prefixEdits = [];
         ServerJSON[message.guild.id].prefixEdits.push({author: message.author.id, time: new Date().getTime(), changedTo: ServerJSON[message.guild.id].prefix});
         fs.writeFileSync('./DB/servers.json', JSON.stringify(ServerJSON, null, 2));
-        let embed = { color: global.greenCol, title: 'success', description: `my prefix in this server has been changed to "${ServerJSON[message.guild.id].prefix}"`, footer: global.footer };
-        return message.channel.send({embed:embed});
+        let embed = { color: global.green, title: 'success', description: `my prefix in this server has been changed to "${ServerJSON[message.guild.id].prefix}"`, footer: global.footer };
+        return message.channel.send({embeds:[embed]});
     }
 }

@@ -16,17 +16,17 @@ module.exports =
     name: 'img', description: 'a list of image commands', hide: true,
     execute(message)
     {
-        let emded = {color: global.blueCol, title: 'a list of image commands', fields: [], footer: global.footer};
-        emded.fields.push({ name: `just images`, value: Object.keys(config.imageLinks.images).filter(a => !config.imageLinks.images[a].endsWith('gif')).join(', ')});
-        emded.fields.push({name: 'gifs/videos', value: Object.keys(config.imageLinks.images).filter(a => config.imageLinks.images[a].endsWith('gif')).concat(Object.keys(config.imageLinks.videos)).join(', ')});
-        emded.fields.push({name: 'special commands', value: imgCommands.filter(c => !c.hide).map(c => c.name[0]).join(', ')});
+        let embed = {color: global.blue, title: 'a list of image commands', fields: [], footer: global.footer};
+        embed.fields.push({ name: `just images`, value: Object.keys(config.imageLinks.images).filter(a => !config.imageLinks.images[a].endsWith('gif')).join(', ')});
+        embed.fields.push({name: 'gifs/videos', value: Object.keys(config.imageLinks.images).filter(a => config.imageLinks.images[a].endsWith('gif')).concat(Object.keys(config.imageLinks.videos)).join(', ')});
+        embed.fields.push({name: 'special commands', value: imgCommands.filter(c => !c.hide).map(c => c.name[0]).join(', ')});
         if (ServerJSON[message.guild.id]?.cmds?.find(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi)))
         {
             let x = [];
             ServerJSON[message.guild.id].cmds.filter(c => c.response.match(/https:\/\/([a-z0-9\-]+\.)+[a-z]{2,6}([^/#?]+)+\.(mov|mp4|webm|png|jpg|jpeg|gif)/gi))
             .forEach(j => x.push(j.name));
-            emded.fields.push({name: 'commands in your server', value: x.join(', ')});
+            embed.fields.push({name: 'commands in your server', value: x.join(', ')});
         }
-        return message.channel.send({embed:emded});
+        return message.channel.send({embeds:[embed]});
     }
 }

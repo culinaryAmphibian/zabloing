@@ -8,7 +8,7 @@ module.exports =
     {
         let prefix = ServerJSON[message.guild.id].prefix || '.';
         let cmd = bot.commands.get(bot.commands.map(c => c.name).find(cmdNames => cmdNames.includes(args[1])));
-        let embed = {color: global.blueCol, title: `${prefix}${cmd.name[0]}`, description: 'aliases: ', fields: [], footer: global.footer};
+        let embed = {color: global.blue, title: `${prefix}${cmd.name[0]}`, description: 'aliases: ', fields: [], footer: global.footer};
 
         let aliases = [];
         if (cmd.name.length > 1) aliases.concat(cmd.name.slice(1));
@@ -34,6 +34,6 @@ module.exports =
         cmd.usage ? usageVal = cmd.usage.replace(/\[pref\]/gi, prefix).replace(/\[curr\]/gi, Config.currency) : usageVal = `${prefix}${cmd.name[0]} (this command doesn't accept parameters)`;
         embed.fields.push({name: 'usage', value: usageVal});
         if (cmd.note) embed.fields.push({name: 'notes/info', value: cmd.note.replace(/\[pref\]/gi, prefix).replace(/\[curr\]/gi, Config.currency)});
-        return message.channel.send({embed:embed});
+        return message.channel.send({embeds:[embed]});
     }
 }

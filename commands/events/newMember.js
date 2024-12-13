@@ -44,7 +44,7 @@ module.exports =
     name: 'guildMemberAdd', description: 'what to do when a new member joins', hide: true,
     async execute(bot, member)
     {
-        let embed = {color: global.blueCol, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
+        let embed = {color: global.blue, title: 'welcome, ', description: '', thumbnail: {url: ''}, fields: []};
         if (!member.user.bot)
         {
             if (!UserJSON[member.user.id]) bot.allCommands.get('newUser').execute(member.user, member.guild.id);
@@ -85,7 +85,7 @@ module.exports =
         const channel = channels.get(ServerJSON[member.guild.id]?.welcomeChannel) || channels.find(c => c.name.includes('welcome') || c.name.includes('wlc') || c.name.includes('general')) || channels.random();
         if (!member.user.bot)
         {
-            channel.send({embed: embed});
+            channel.send({embeds: [embed]});
             return channel.send({files:[canvas.toBuffer('image/png')]});
         }
         embed.title = `${member.user.tag} has joined the server.`;
@@ -99,6 +99,6 @@ module.exports =
             if (permsStr.startsWith('undefined')) permsStr = permsStr.slice('undefined'.length);
             embed.fields.push({name: `${member.user.username} has permissions to:`, value: permsStr});
         }
-        return channel.send({embed: embed});
+        return channel.send({embeds: [embed]});
     }
 }

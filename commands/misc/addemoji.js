@@ -1,4 +1,4 @@
-let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: '', footer: global.footer};
 
 module.exports =
 {
@@ -6,24 +6,24 @@ module.exports =
     execute(message, args)
     {
         errEmbed.description = 'you don\'t have the perms!';
-        if (!message.member.hasPermission('MANAGE_EMOJI')) return message.channel.send({embed:errEmbed});
+        if (!message.member.hasPermission('MANAGE_EMOJI')) return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'i don\'t have the perms';
-        if (!message.guild.me.hasPermission('MANAGE_EMOJI')) return message.channel.send({embed:errEmbed});
+        if (!message.guild.me.hasPermission('MANAGE_EMOJI')) return message.channel.send({embeds:[errEmbed]});
         let emojiSrc;
         let emojiTitle;
         errEmbed.description = 'please provide a name for the emoji';
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         if (args[2])
         {
             errEmbed.description = 'the provided name is not allowable';
-            if (!args[1].match(/\w{2,32}/gi)) return message.channel.send({embed:errEmbed});
+            if (!args[1].match(/\w{2,32}/gi)) return message.channel.send({embeds:[errEmbed]});
             emojiTitle = args[1];
             emojiSrc = args[2];
         } else if (message.attachments.first() && args[1])
         {
             emojiTitle = args.slice(1).join("_");
             errEmbed.description = 'the provided name is not allowable';
-            if (!emojiTitle.match(/^\w{2,32}$/gi)) return message.channel.send({embed:errEmbed});
+            if (!emojiTitle.match(/^\w{2,32}$/gi)) return message.channel.send({embeds:[errEmbed]});
             emojiSrc = message.attachments.first().attachment;
         }
         if (emojiSrc && emojiTitle) return message.guild.emojis.create(args[2], args[1])

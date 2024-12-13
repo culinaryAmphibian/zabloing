@@ -1,8 +1,8 @@
 const { currency } = require('../../DB/config.json');
 const UserJSON = require(`../../DB/users.json`);
 
-let embed = { color: global.greenCol, title: ``, footer: global.footer };
-let errorEmbed = { color: global.redCol, title: `error`, description: '', footer: global.footer };
+let embed = { color: global.green, title: ``, footer: global.footer };
+let errorEmbed = { color: global.red, title: `error`, description: '', footer: global.footer };
 
 module.exports =
 {
@@ -20,18 +20,18 @@ module.exports =
                 target = (await message.guild.members.list()).find((u) => u.nickname.includes(query) || u.user.displayName.includes(query))
                 if (!target) {
                     errorEmbed.description = `the user by the name of ${query} could not be found :(`;
-                    return message.channel.send({embed: errorEmbed});
+                    return message.channel.send({embeds: [errorEmbed]});
                 }
             }
             if (!UserJSON[target.user.id]) {
                 if (target.user.bot) {
                     errorEmbed.description = `the found user (${target}) is a bot and cannot play the game.`;
-                    return message.channel.send({embed:errorEmbed});
+                    return message.channel.send({embeds:[errorEmbed]});
                 }
                 bot.allCommands.get('newUser').execute(target.user, message.guild.id);
             }
             embed.title = `${target.user.tag} has ${UserJSON[target.user.id].games.bal} ${currency}`;
         }
-        return message.channel.send({embed:embed});
+        return message.channel.send({embeds:[embed]});
     }
 }

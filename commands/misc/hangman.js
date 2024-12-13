@@ -184,12 +184,12 @@ module.exports =
         let underScores = `\`\`${_underScores.join(" ")}\`\``;
         let mainEmbed =
         {
-            color: global.blueCol, title: underScores, description: `good luck!`,
+            color: global.blue, title: underScores, description: `good luck!`,
             image: { url: hangmanImg[0] },
             fields: [ { name: 'word length', value: wordToGuess.length },
             { name: 'guesses', value: guessCount} ], footer: global.footer
         };
-        const mainMessage = await(message.channel.send({embed:mainEmbed}));
+        const mainMessage = await(message.channel.send({embeds:[mainEmbed]}));
         let t1 = UserJSON[message.author.id].cooldowns.hangman;
         UserJSON[message.author.id].games.hangman.lastGameLink = mainMessage.url;
         writeToUsers();

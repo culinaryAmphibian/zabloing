@@ -118,6 +118,6 @@ module.exports =
             UserJSON[target.id].name.slice(0, -1).forEach(n => prevNameStr += `${n}\n`);
             embed.fields.splice(3, 0, { name: 'previous names', value: prevNameStr});
         }
-       return message.channel.send({embed:embed});
+       return message.channel.send({embeds:[embed]});
     }
 }

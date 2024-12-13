@@ -1,7 +1,7 @@
 const {color: {defaults}} = require('../../DB/config.json');
 const reason = 'official color role stuff business';
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the perms to manage roles', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'i don\'t have the perms to manage roles', footer: global.footer};
 
 const template = (color, position) => {return {name: `#${color}`, color: color, position: position, permissions: [], mentionable: false}};
 const hexMatching = (str) => {
@@ -17,9 +17,9 @@ module.exports = {
     note: `there are ${n} different named colors available.\nyou can see them all at [w3schools](https://www.w3schools.com/cssref/css_colors.asp) and the (discord.js docs)[https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable].`,
     async execute(message, args) {
         if (!message.guild.me.hasPermission('MANAGE_ROLES'))
-            return message.channel.send({embed:errEmbed});
+            return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'please specify a valid color hex or name';
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         let col;
         let hexMatch = args[1].match(/^#?([a-f0-9]{6})$/i);
         if (defaults[args[1]])
@@ -29,7 +29,7 @@ module.exports = {
         else if (args[1].toLowerCase() == 'random')
             col = 'RANDOM';
         else
-            return message.channel.send({embed:errEmbed});
+            return message.channel.send({embeds:[errEmbed]});
         let guildMember = message.member;
         let pos = 1;
         if (guildMember.roles.color) pos = guildMember.roles.color.position + 1;
@@ -39,7 +39,7 @@ module.exports = {
         let memberAlreadyHasRole = membersearchFrom?.find(r => r.name.slice(1) == col);
         errEmbed.description = 'you already have that role!';
         if (memberAlreadyHasRole)
-            return message.channel.send({embed:errEmbed});
+            return message.channel.send({embeds:[errEmbed]});
         if (membersearchFrom)
             guildMember.roles.remove(membersearchFrom, reason);
 
@@ -56,7 +56,7 @@ module.exports = {
         if (roleToGive.position < guildMember.roles.color.position) {
             errEmbed.description = 'sorry, but the role hierarchy doesn\'t let me move the requested color role higher than your current color role.';
             if (message.guild.me.roles.highest.position < guildMember.roles.color.position)
-                return message.channel.send({embed:errEmbed});
+                return message.channel.send({embeds:[errEmbed]});
             return roleToGive.edit({position:guildMember.roles.color.position + 1});
         }
     }

@@ -1,6 +1,6 @@
 const dateFormat = import('dateformat');
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'please specify an emoji', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'please specify an emoji', footer: global.footer};
 const bth = { false: 'no', true: 'yes' };
 
 module.exports =
@@ -8,7 +8,7 @@ module.exports =
     name: ['emoji'], description: 'displays info about an emoji', usage: '[pref]emoji <emoji>\nexample: [pref]emoji <:john:822616260638408724>', note: 'this does **not** work with default emoji, like :no_mouth:',
     async execute(message, args, bot)
     {
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         if (args[1].match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/))
         {
             let emojiCache = bot.emojis.cache;
@@ -16,13 +16,13 @@ module.exports =
             let emoj = emojiCache.get(emojiId);
             let oopEmbed =
             {
-                color: global.orangeCol, title: `oops!`,
+                color: global.orange, title: `oops!`,
                 thumbnail: {url: `https://discordapp.com/emojis/${emojiId}.gif`},
                 description: 'sorry, i couldn\'t find that emoji, so i can\'t fetch all of its info.\nit will appear as a thumnbail if it is animated', 
                 image: {url: `https://discordapp.com/emojis/${emojiId}.png` },
                 fields: [ { name: 'id', value: emojiId } ], footer: global.footer
             };
-            if ((!emoj) || (!emoj.available)) return message.channel.send({embed:oopEmbed});
+            if ((!emoj) || (!emoj.available)) return message.channel.send({embeds:[oopEmbed]});
             let initAuthor = await(emoj.fetchAuthor());
             if (message.guild.member(initAuthor)) initAuthor = message.guild.member(initAuthor);
             else initAuthor = initAuthor.username;
@@ -30,7 +30,7 @@ module.exports =
             h = Math.floor(x / 86400000);
             let embed =
             {
-                color: global.blueCol, title: emoj.name, image: {url: emoj.url},
+                color: global.blue, title: emoj.name, image: {url: emoj.url},
                 fields:
                 [
                     { name: 'date created', value: `${h} days ago\n${dateFormat(emoj.createdAt, 'default', true)} UTC`},
@@ -50,7 +50,7 @@ module.exports =
                 h.forEach(r => rolesStr += `${r}\n`);
                 embed.fields.push({name: `roles that can use this emoji (${emoj.roles.cache.size})`, value: `${rolesStr}${strToAddAtTheEnd}`});
             }
-            return message.channel.send({embed:embed});
+            return message.channel.send({embeds:[embed]});
         }
     }
 }

@@ -1,6 +1,6 @@
 const weather = require('weather-js');
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'please specify a location', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'please specify a location', footer: global.footer};
 
 function CAndF(tempInC)
 {
@@ -25,17 +25,17 @@ module.exports =
         if (message.guild) return;
         let args = message.content.toLowerCase().split(" ");
         let location = args.slice(1);
-        if (!location) return message.author.send({embed:errEmbed});
+        if (!location) return message.author.send({embeds:[errEmbed]});
         weather.find({search: location, degreeType: 'C'}, function(err, result)
         {
             errEmbed.description = `an error ocurred: ${err}, probably because you didn't specify a valid location.`;
-            if (err) return message.author.send({embed:errEmbed});
+            if (err) return message.author.send({embeds:[errEmbed]});
             let current = result[0].current;
             let forecast = [];
             if (result[1]) forecast = result[1].forecast;
             let embed =
             {
-                color: global.blueCol, thumbnail: { url: current.imageUrl },
+                color: global.blue, thumbnail: { url: current.imageUrl },
                 title: `weather for ${current.observationpoint.toLowerCase()}`,
                 description: `last measured at ${current.observationtime} ${current.date}`,
                 fields:
@@ -58,7 +58,7 @@ module.exports =
                     embed.fields.push(objToPush);
                 });
             }
-            message.author.send({embed:embed});
+            message.author.send({embeds:[embed]});
         });
     }
 }

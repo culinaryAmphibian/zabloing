@@ -4,7 +4,7 @@ var langs = config["langlist"];
 var langsTwo = config["langListtwo"];
 //here
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'please specify a query', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'please specify a query', footer: global.footer};
 
 module.exports =
 {
@@ -12,7 +12,7 @@ module.exports =
     note: 'the first optional parameter defaults to english, so your query will be translated to english by default\n\na full list of accepted language codes can be found here: [wikipedia - iso 639-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)\n\nsince a language to translate ***to*** is not required, you may have to write the language name/code twice; for example if i want to get the word spanish in spanish i would need to do ``[pref]translate spanish spanish`` because the first time spanish is written, it tells the parser to use that as the language code because it is a valid language code.\n\na query is not optional.\n\nnote that, to specify a language to translate ***from***, a language name or code has to be surrounded by double backticks and be the last parameter, it defaults to whatever google translate detects.',
     execute(message, args)
     {
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         let fromLang;
         let toLang;
         let query;
@@ -54,7 +54,7 @@ module.exports =
             if (translated.raw[3]) wordType = `(${translated.raw[3][5][0][0][0]})`;
             let embed =
             {
-                color: global.blueCol, title: `"${translated.text}" ${inTheLanguage} ${wordType}`,
+                color: global.blue, title: `"${translated.text}" ${inTheLanguage} ${wordType}`,
                 fields:
                 [
                     { name: `from`, value: fromLang, inline: true },
@@ -62,7 +62,7 @@ module.exports =
                 ], footer: global.footer
             };
             if (translated.raw[3]) embed.fields.push({ name: 'other translations', value: `${translated.raw[3][5][0][0][1][0][0]}, ${translated.raw[3][5][0][0][1][1][0]}`});
-            message.channel.send({embed:embed});
+            message.channel.send({embeds:[embed]});
         })
     }
 }

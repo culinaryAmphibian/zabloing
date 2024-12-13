@@ -161,19 +161,19 @@ module.exports =
     usage: '[pref]mute ?<role mention, id or its name suffixed with "r:", channel mention, or its id, or user ids> ?<user names, nicknames, or tags, separated by semicolons> ?<reason that is not a number/time in minutes> ?<time>\nexample: [pref]mute jeff#0001 3',
     async execute(message, args)
     {
-        let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
-        let succEmbed = {color: global.greenCol, title: 'success', description: '', fields: [], footer: global.footer};
-        if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send({embed:errEmbed});
+        let errEmbed = {color: global.orange, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
+        let succEmbed = {color: global.green, title: 'success', description: '', fields: [], footer: global.footer};
+        if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'you don\'t have the permission to manage roles.';
-        if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send({embed:errEmbed});
+        if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'please specify a user to mute.';
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         let all = await resolveToMembers(message, args);
         args = all.args;
         let target = all.target;
         let final = all.final;
         errEmbed.description = `i couldn't find those users.`;
-        if (!final[0]) return message.channel.send({embed: errEmbed});
+        if (!final[0]) return message.channel.send({embeds: [errEmbed]});
         let roleToGive = message.guild.roles.cache.find(r => (r.name.toLowerCase() == 'muted') && (!r.permissions.toArray().includes('SEND_MESSAGES')));
         final.sort((a, b) => b.roles.highest.position - a.roles.highest.position);
         if (!roleToGive) roleToGive = await message.guild.roles.create({data: {name: 'muted', position: message.guild.me.roles.highest.position - 1 || final[0].roles.highest.position || 1, permissions: ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY'], mentionable: false}, reason: `muting called by ${message.author.tag}.`});
@@ -183,11 +183,11 @@ module.exports =
         if (reason) final.filter(m => !m.roles.cache.has(roleToGive.id)).forEach(m => m.roles.add(roleToGive, reason));
         succEmbed.description = `${final.length} member${weirdS(final.length)} ${weirderS(final.length)} been muted.\nlist:`;
         Object.keys(target).filter(key => target[key][0]).forEach(key => succEmbed.fields.push({name: `${key}`, value: target[key].join(', ')}));
-        if (!time) return message.channel.send({embed:succEmbed});
+        if (!time) return message.channel.send({embeds:[succEmbed]});
         let limit = 1000 * 60 * 60 * 24 * 7 * 4;
         if (time > limit) time = limit;
         succEmbed.description = `${final.length} member${weirdS(final.length)} ${weirderS(final.length)} been muted.\nthey will be unmuted in ${when(time)}, on ${dateFormat(new Date().getTime() + time, "dddd, mmmm dd, yyyy h:M:s TT", true)}\nlist:`;
-        message.channel.send({embed: succEmbed});
+        message.channel.send({embeds: [succEmbed]});
         setTimeout(function() {final.forEach(m => m.roles.remove(roleToGive, 'time was up.'))}, time);
     }
 }

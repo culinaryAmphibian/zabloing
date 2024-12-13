@@ -1,7 +1,7 @@
 const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 
-let errorEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
+let errorEmbed = {color: global.orange, title: 'error', description: '', footer: global.footer};
 
 module.exports =
 {
@@ -21,7 +21,7 @@ module.exports =
             title = `total ${ConfigJSON.currency}`;
             let fin = filtered.filter(a => a[1].games.bal > 0);
             errorEmbed.description = 'no players with a balance higher than 0 were found in this server :(';
-            if (fin.length < 1) return message.channel.send({embed:errorEmbed});
+            if (fin.length < 1) return message.channel.send({embeds:[errorEmbed]});
             if (fin.length > 10) fin = fin.slice(0, 10);
             fin = fin.sort((a, b) => b[1].games.bal - a[1].games.bal);
             fin.forEach(m =>
@@ -34,7 +34,7 @@ module.exports =
             title = `total games played`;
             let fin = filtered.filter(a => a[1].games.hangman).filter(a => a[1].games.hangman.gamesPlayed > 0);
             errorEmbed.description = 'no players that have played a game were found in this server :(';
-            if (fin.length < 1) return message.channel.send({embed:errorEmbed});
+            if (fin.length < 1) return message.channel.send({embeds:[errorEmbed]});
             if (fin.length > 10) fin = fin.slice(0, 10);
             fin = fin.sort((a, b) => b[1].games.hangman.gamesPlayed - a[1].games.hangman.gamesPlayed);
             fin.forEach(a =>
@@ -47,7 +47,7 @@ module.exports =
             title = `win/loss ratio`
             let fin = filtered.filter(a => a[1].games.hangman).filter(a => a[1].games.hangman.gamesPlayed > 0);
             errorEmbed.description = 'no players that have played a game were found in this server :(';
-            if (fin.length < 1) return message.channel.send({embed:errorEmbed});
+            if (fin.length < 1) return message.channel.send({embeds:[errorEmbed]});
             if (fin.length > 10) fin = fin.slice(0, 10);
             fin.forEach(a =>
             {
@@ -67,9 +67,9 @@ module.exports =
         }
         let lbEmbed =
         {
-            color: global.greenCol, title: `this server's leaderboard for ${title}`,
+            color: global.green, title: `this server's leaderboard for ${title}`,
             description: lbString, footer: global.footer
         };
-        return message.channel.send({embed:lbEmbed});
+        return message.channel.send({embeds:[lbEmbed]});
     }
 }

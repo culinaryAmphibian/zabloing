@@ -1,7 +1,7 @@
 const fs = require('fs');
 const ServersJSON = require('../../DB/servers.json');
 
-let embed = {color: global.blueCol, title: '', description: '', fields: [], footer: {text: '', icon_url: ''}};
+let embed = {color: global.blue, title: '', description: '', fields: [], footer: {text: '', icon_url: ''}};
 
 module.exports =
 {
@@ -21,7 +21,7 @@ module.exports =
             embed.fields.push({ name: 'prefix', value: 'my prefix by default is "."'},
                 {name: 'you can change my prefix with the setprefix command', value: 'just prefix it with the new prefix.'},
                 {name: 'my commands', value: 'type `.help` for a list of commands'});
-            return channel.send({embed:embed});
+            return channel.send({embeds:[embed]});
         }
         ServersJSON[guild.id].log.push({type: 'join', time: new Date().getTime()});
         ServersJSON[guild.id].currentlyInThere = true;
@@ -31,7 +31,7 @@ module.exports =
         embed.description = 'something tells me that i\'ve been here before...';
         embed.fields.push({name: `my commands: `, value: `you can see all my commands through the help command`},
         {name: `my current prefix is ${prefix}`, value: 'you can change it by running <preferred prefix>setprefix'});
-        channel.send({embed: embed});
+        channel.send({embeds: [embed]});
         return fs.writeFileSync('./DB/servers.json', JSON.stringify(ServersJSON, null, 2));
     }
 }

@@ -17,7 +17,7 @@ function placeText(canvas, text, width)
     return ctx.font;
 }
 
-let embed = {color: global.orangeCol, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
+let embed = {color: global.orange, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
 
 let dateMask = 'dddd, mmmm d yyyy h:M:s tt';
 
@@ -37,7 +37,7 @@ module.exports =
         if (!serverLeft?.leaves) serverLeft.leaves = 0;
         serverLeft.leaves++;
         fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
-        embed.color = global.orangeCol;
+        embed.color = global.orange;
         embed.title = `${user.tag} has been banned.`;
         let toptext = 'goodbye,';
         embed.thumbnail.url = user.displayAvatarURL({dynamic: true, size: 4096});
@@ -74,6 +74,6 @@ module.exports =
         const av = await Canvas.loadImage(user.displayAvatarURL({format:'png', size: 256}));
         ctx.drawImage(av, canvas.width/6 - 128, canvas.height/2 - 128, 256, 256);
         
-        return channel.send({embed: embed, files: [canvas.toBuffer('image/png')]});
+        return channel.send({embeds: [embed], files: [canvas.toBuffer('image/png')]});
     }
 }

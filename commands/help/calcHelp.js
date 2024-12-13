@@ -7,13 +7,13 @@ module.exports =
         {
             let calcHelpEmbed =
             {
-                color: global.blueCol, title: `a list of calculator commands`, fields: [
+                color: global.blue, title: `a list of calculator commands`, fields: [
                     { name: `all the basic operations`, value: `addition (add), subtraction (subtract), multiplication (mult), division (div)`},
                     { name: `slightly more advanced operations`, value: `squareroot (sqrt), factorials (!), exponents (exp)`},
                     { name: `trigonometric functions`, value: `sin, cos, tan, asin, acos, atan`},
                     { name: `for syntax help:`, value: `do ${prefix}help calc < operator >`}], footer: global.footer
             };
-            return message.channel.send({embed:calcHelpEmbed});
+            return message.channel.send({embeds:[calcHelpEmbed]});
         }
         switch (args[2])
         {

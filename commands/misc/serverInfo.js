@@ -89,7 +89,7 @@ module.exports =
             
         let embed =
         {
-            color: global.blueCol, title: `server info for ${message.guild.name}`, thumbnail: {url: icon},
+            color: global.blue, title: `server info for ${message.guild.name}`, thumbnail: {url: icon},
             fields:
             [
                 { name: `region`, value: serverRegion, inline: true},
@@ -110,6 +110,6 @@ module.exports =
         if (allRoles.size > 0) embed.fields.push({name: `${allEmojis.size} total emojis, ${animatedEmojis} of which are animated`, value: emojisStr, inline: true});
         if (message.guild.premiumTier) embed.fields.push({name: `boosts`, value: `tier ${message.guild.premiumTier}, ${message.guild.premiumSubscriptionCount} boosts`});
 
-        return message.channel.send({embed:embed});
+        return message.channel.send({embeds:[embed]});
     }
 }

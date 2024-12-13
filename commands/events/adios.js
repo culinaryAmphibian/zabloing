@@ -47,8 +47,8 @@ module.exports =
         let channel = channelCache.get(ServerJSON[member.guild.id].leaveChannel) || channelCache.get(ServerJSON[member.guild.id].welcomeChannel) || channelCache.find(c => acceptableChannelNames.includes(c.name)) || channelCache.random();
         if (!channel) return;
 
-        let embed = {color: global.blueCol, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
-        embed.color = member.displayHexColor || global.orangeCol;
+        let embed = {color: global.blue, title: '', thumbnail: {url: ''}, description: '', fields: [], footer: {text: '', icon_url: ''}};
+        embed.color = member.displayHexColor || global.orange;
         embed.title = nick(member);
         embed.description = `bye, ${member} 😢`;
         embed.thumbnail.url = member.user.displayAvatarURL({dynamic: true, size: 4096});
@@ -120,6 +120,6 @@ module.exports =
         const av = await Canvas.loadImage(member.user.displayAvatarURL({format:'png', size: 256}));
         ctx.drawImage(av, canvas.width/6 - 128, canvas.height/2 - 128, 256, 256);
         
-        return channel.send({embed: embed, files: [canvas.toBuffer('image/png')]});
+        return channel.send({embeds: [embed], files: [canvas.toBuffer('image/png')]});
     }
 }

@@ -42,7 +42,7 @@ module.exports = {
             command = bot.allCommands.find(c => c.name.includes(a));
         if (!command)
             return;
-        [global.blueCol, global.orangeCol, global.greenCol, global.redCol] = await bot.allCommands.get('rainbow').execute(message.guild.id);
+        [global.blue, global.orange, global.green, global.red] = await bot.allCommands.get('rainbow').execute(message.guild.id);
         return command.execute(message, args, bot);
     }
 }

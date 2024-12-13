@@ -6,7 +6,7 @@ const UserJSON = require('../../DB/users.json');
 const when = require('../util/when');
 
 const questions = ['what command gave you the issue', 'what happened? it would be helpful if you gave a description and/or a screenshot. thanks!', 'thanks for reporting the issue! i\'ll be on it straight away!'];
-let errEmbed = {color: global.orangeCol, title: 'error', description: '', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: '', footer: global.footer};
 let queue = ConfigJSON.reports;
 
 module.exports =
@@ -18,7 +18,7 @@ module.exports =
         if (!UserJSON[message.author.id].lastReport) UserJSON[message.author.id].lastReport = new Date().getTime() - (1000 * 60 * 60);
         if (!UserJSON[message.author.id].reportCount) UserJSON[message.author.id].reportCount = 0;
         errEmbed.description = `you have already reported in the last hour.\nyou can report again in ${when(UserJSON[message.author.id].lastReport + (1000 * 60 * 60) - new Date().getTime())}`;
-        if ((new Date().getTime()) - UserJSON[message.author.id].lastReport < (1000 * 60 * 60)) return message.channel.send({embed:errEmbed});
+        if ((new Date().getTime()) - UserJSON[message.author.id].lastReport < (1000 * 60 * 60)) return message.channel.send({embeds:[errEmbed]});
         UserJSON[message.author.id].lastReport = new Date().getTime();
         UserJSON[message.author.id].reportCount++;
         fs.writeFileSync('./DB/users.json', JSON.stringify(UserJSON, null, 2));
@@ -29,7 +29,7 @@ module.exports =
         collector.on('collect', () => message.channel.send(questions[counter++]));
         collector.on('end', async(collected) =>
         {
-            let embed = {color: global.orangeCol, title: `problem with the ${collected.first().content} command by ${collected.first().author.id}`,
+            let embed = {color: global.orange, title: `problem with the ${collected.first().content} command by ${collected.first().author.id}`,
             description: `reported by ${collected.first().author.tag}\nin ${collected.first().guild.id} owned by ${collected.first().guild.owner.user.tag}.`,
             fields: [], footer: global.footer};
             counter = 0;
@@ -53,7 +53,7 @@ module.exports =
         {
             if (queue[0])
             {
-                if (queue[0].description) meCh = await me.send({embed:queue.shift()});
+                if (queue[0].description) meCh = await me.send({embeds:[queue.shift()]});
                 if (queue[0]?.length) me.send({files:queue.shift()});
                 fs.writeFileSync('./DB/config.json', JSON.stringify(ConfigJSON, null, 2));
             }

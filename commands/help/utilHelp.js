@@ -17,13 +17,13 @@ module.exports =
     {
         let prefix = ServerJSON[message.guild.id].prefix || '.';
         utilCommands.filter(c => !c.hide || c.userUsable);
-        let embed = {color: global.blueCol, title: 'a list of bot configuration commands', fields: [], footer: global.footer};
+        let embed = {color: global.blue, title: 'a list of bot configuration commands', fields: [], footer: global.footer};
         utilCommands.each(c =>
         {
             let usag;
             c.usage ? usag = c.usage : usag = `${prefix}${c.name} (this command doesn't accept any parameters)`;
             embed.fields.push({name: prefix + c.name, value: `${c.description}\n${usag}`});
         });
-        return message.channel.send({embed:embed});
+        return message.channel.send({embeds:[embed]});
     }
 }

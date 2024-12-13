@@ -93,8 +93,8 @@ function weirderS(num)
     return 'has';
 }
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
-let succEmbed = {color: global.greenCol, title: 'success', description: '', fields: [], footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'i don\'t have the permission to manage roles.', footer: global.footer};
+let succEmbed = {color: global.green, title: 'success', description: '', fields: [], footer: global.footer};
 
 module.exports =
 {
@@ -103,23 +103,23 @@ module.exports =
     usage: '[pref]unmute ?<channel mention or id, role mention, id, or its name prefixed with "r:", user mention, id, tag> ?<usernames or nicknames separated by semicolons> | ?<reason>',
     async execute(message, args)
     {
-        if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send({embed:errEmbed});
+        if (!message.guild.me.hasPermission('MANAGE_ROLES')) return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'you don\'t have the permission to manage roles.';
-        if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send({embed:errEmbed});
+        if (!message.member.hasPermission('MANAGE_ROLES')) return message.channel.send({embeds:[errEmbed]});
         errEmbed.description = 'please specify a user to mute.';
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         let all = await resolveToMembers(message, args);
         let final = all.final;
         let target = all.target;
         errEmbed.description = `i couldn't find those users.`;
-        if (!final) return message.channel.send({embed: errEmbed});
+        if (!final) return message.channel.send({embeds: [errEmbed]});
         let roleToRemove = message.guild.roles.cache.find(r => r.name.toLowerCase() == 'muted' && !r.permissions.toArray().includes('SEND_MESSAGES'));
         errEmbed.description = 'there is no muted role in this server!';
-        if (!roleToRemove) return message.channel.send({embed: errEmbed});
+        if (!roleToRemove) return message.channel.send({embeds: [errEmbed]});
         let reason = message.content.slice(1).shift() || 'no reason provided';
         final.filter(m => m.roles.cache.has(roleToRemove.id)).forEach(m => m.roles.remove(roleToRemove, reason));
         succEmbed.description = `${final.length} member${weirdS(final.length)} ${weirderS(final.length)} been unmuted.`;
         Object.keys(target).filter(t => t[0]).forEach(t => succEmbed.fields.push({name: t, value: all.target[t].join(', ')}));
-        return message.channel.send({embed: succEmbed});
+        return message.channel.send({embeds: [succEmbed]});
     }
 }

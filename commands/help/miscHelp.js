@@ -15,7 +15,7 @@ module.exports =
     name: 'misc', description: `a list of misceallaneous commands`, hide: true,
     execute(message, prefix)
     {
-        let miscHelpEmbed = { color: global.blueCol, title: 'a list of misceallaneous commands', fields: [], footer: global.footer};
+        let miscHelpEmbed = { color: global.blue, title: 'a list of misceallaneous commands', fields: [], footer: global.footer};
         miscCommands.filter(c => !c.hide).each(cmd =>
         {
             let cmdName;
@@ -32,6 +32,6 @@ module.exports =
                 miscHelpEmbed.fields.push({name: 'custom commands in this server', value: others.join(', ')});
             }
         }
-        return message.channel.send({embed:miscHelpEmbed});
+        return message.channel.send({embeds:[miscHelpEmbed]});
     }
 }

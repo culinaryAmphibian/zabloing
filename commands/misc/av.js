@@ -1,4 +1,4 @@
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'sorry, i could not find that user.', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'sorry, i could not find that user.', footer: global.footer};
 
 module.exports =
 {
@@ -6,7 +6,7 @@ module.exports =
     note: 'the optional parameter defaults to the message author, which is you.',
     async execute(message, args)
     {
-        var embed = { color: global.blueCol, title: ``, url: ``, image: { url: `` }, footer: global.footer };
+        var embed = { color: global.blue, title: ``, url: ``, image: { url: `` }, footer: global.footer };
         let target;
         let mentioned = message.mentions.members.first();
         if (!args[1]) target = message.author;
@@ -17,13 +17,13 @@ module.exports =
             {
                 let query = args.slice(1).join(" ");
                 let x = (await message.guild.members.list()).find((u) => u.nickname.includes(query) || u.user.displayName.includes(query))
-                if (x == undefined) return message.channel.send({embed:errEmbed});
+                if (x == undefined) return message.channel.send({embeds:[errEmbed]});
                 target = x.user;
             }
         }
         embed.image.url = target.displayAvatarURL({ dynamic: true, size: 4096 });
         embed.title = `${target.username}'s avatar`;
         embed.url = target.displayAvatarURL({ dynamic: true, size: 4096, format: 'png' });
-        return message.channel.send({embed:embed});
+        return message.channel.send({embeds:[embed]});
     }
 }

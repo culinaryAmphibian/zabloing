@@ -2,7 +2,7 @@ const dateFormat = import('dateformat');
 const tracker = require('delivery-tracker');
 const validator = require('tracking-number-validation');
 
-let errEmbed = {color: global.orangeCol, title: 'error', description: 'no specified package to track!', footer: global.footer};
+let errEmbed = {color: global.orange, title: 'error', description: 'no specified package to track!', footer: global.footer};
 []
 module.exports =
 {
@@ -11,19 +11,19 @@ module.exports =
     async execute(message)
     {
         let args = message.content.split(" ");
-        if (!args[1]) return message.channel.send({embed:errEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errEmbed]});
         let code = args.slice(1).join(" ");
         let courierUno = validator.getCourier(code).pop();
         let courier = tracker.courier(courierUno);
         courier.trace(args[1], function(err, result)
         {
             errEmbed.description = err;
-            if (err) return message.channel.send({embed:errEmbed});
+            if (err) return message.channel.send({embeds:[errEmbed]});
             errEmbed.description = 'no result was fetched';
-            if (!result) return message.channel.send({embed:errEmbed});
+            if (!result) return message.channel.send({embeds:[errEmbed]});
             let embed =
             {
-                color: global.blueCol, title: `${result.courier.name} package ${code}`,
+                color: global.blue, title: `${result.courier.name} package ${code}`,
                 description: `Status: ${result.status} (${result.checkpoints.length} checkpoints available to be displayed)`
             };
             if (result.checkpoints)
@@ -33,7 +33,7 @@ module.exports =
             }
             try
             {
-                return message.author.send({embed:embed});
+                return message.author.send({embeds:[embed]});
             } catch(err) {return}
         })
     }

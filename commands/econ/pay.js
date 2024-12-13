@@ -3,9 +3,9 @@ const ConfigJSON = require('../../DB/config.json');
 const UserJSON = require('../../DB/users.json');
 const ServerJSON = require('../../DB/servers.json');
 
-let successEmbed = { color: global.greenCol, title: 'success!', description: '', footer: global.footer };
+let successEmbed = { color: global.green, title: 'success!', description: '', footer: global.footer };
 
-let errorEmbed = { color: global.orangeCol, title: 'error', description: '', footer: global.footer };
+let errorEmbed = { color: global.orange, title: 'error', description: '', footer: global.footer };
 
 module.exports =
 {
@@ -15,9 +15,9 @@ module.exports =
         if (message.author.id !== '550886249309929472') return;
         let prefix = ServerJSON[message.guild.id].prefix;
         errorEmbed.description = `please specify an amount of ${ConfigJSON.currency} to transfer`;
-        if (!args[1]) return message.channel.send({embed:errorEmbed});
+        if (!args[1]) return message.channel.send({embeds:[errorEmbed]});
         errorEmbed.description = `please specify a user to pay the ${ConfigJSON.currency} to.`;
-        if (!args[2]) return message.channel.send({embed:errorEmbed});
+        if (!args[2]) return message.channel.send({embeds:[errorEmbed]});
         let money = args[1];
         errorEmbed.description = 'please specify a valid amount of money to transfer';
         errorEmbed.fields =
@@ -27,10 +27,10 @@ module.exports =
             { name: 'other info', value: 'the target user parameter accepts a mention, user id, tag, or partial username or nickname', inline: true }
         ];
         if ( ( (isNaN(money)) && (money !== 'all')) || (money.includes(".")) || (money.includes("-")) || (money == 0) )
-        return message.channel.send({embed:errorEmbed});
+        return message.channel.send({embeds:[errorEmbed]});
         delete errorEmbed.fields;
         errorEmbed.description = `you only have 0 ${ConfigJSON.currency}!`;
-        if (UserJSON[message.author.id].games.bal < 1) return message.channel.send({embed:errorEmbed});
+        if (UserJSON[message.author.id].games.bal < 1) return message.channel.send({embeds:[errorEmbed]});
         money == 'all' ? money = UserJSON[message.author.id].games.bal : money = parseInt(money);
         let mentioned = message.mentions.members.first();
         let target = 1;
@@ -49,13 +49,13 @@ module.exports =
         if (!UserJSON[target.user.id])
         {
             errorEmbed.description = `${target} is a bot and cannot play the game.`;
-            if (target.user.bot) return message.channel.send({embed:errorEmbed});
+            if (target.user.bot) return message.channel.send({embeds:[errorEmbed]});
             bot.allCommands.get('newUser').execute(target.user, message.guild.id);
         }
         errorEmbed.description = 'you don\'t have enough money!';
-        if (money > UserJSON[message.author.id].games.bal) return message.channel.send({embed:errorEmbed});
+        if (money > UserJSON[message.author.id].games.bal) return message.channel.send({embeds:[errorEmbed]});
         errorEmbed.description = 'you\'re giving money to yourself!';
-        if (target.user.id == message.author.id) return message.channel.send({embed:errorEmbed});
+        if (target.user.id == message.author.id) return message.channel.send({embeds:[errorEmbed]});
         // success
         UserJSON[message.author.id].games.bal -= money;
         UserJSON[target.user.id].games.bal += money;
@@ -66,6 +66,6 @@ module.exports =
             { name: 'your balance', value: `is now ${UserJSON[message.author.id].games.bal} ${ConfigJSON.currency}`},
             { name: `and ${target.user.username}'s balance`, value: `is now ${UserJSON[target.user.id].games.bal} ${ConfigJSON.currency}`}
         ];
-        return message.channel.send({embed:successEmbed});
+        return message.channel.send({embeds:[successEmbed]});
     }
 }
